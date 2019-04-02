@@ -1,0 +1,27 @@
+language: go
+
+go:
+  - 1.10.x
+  - 1.11.x
+  - 1.12.x
+  - tip
+
+os:
+  - linux
+
+branches:
+  only:
+  - master
+  - develop
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - go: tip
+
+before_install:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - make deps
+
+script:
+  - make all
