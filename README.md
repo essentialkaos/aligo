@@ -2,15 +2,19 @@
 
 <p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#thanks">Thanks</a> • <a href="#license">License</a></p>
 
+<p align="center">
+  <a href="https://travis-ci.org/essentialkaos/aligo"><img src="https://travis-ci.org/essentialkaos/aligo.svg?branch=master" alt="TravisCI" /></a>
+  <a href="https://codebeat.co/projects/github-com-essentialkaos-aligo-master"><img alt="codebeat badge" src="https://codebeat.co/badges/18a359f5-50dd-4bfc-95b2-07dee23d018a" /></a>
+  <a href="https://goreportcard.com/report/github.com/essentialkaos/aligo"><img src="https://goreportcard.com/badge/github.com/essentialkaos/aligo" alt="GoReportCard" /></a>
+  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg" alt="License" /></a>
+</p>
+
 `aligo` is a utility for checking and viewing Golang struct alignment info.
-
-
 
 ### Screenshots
 
 <p align="center">
   <img src="https://gh.kaos.st/aligo-1.png" alt="aligo preview">
-  <br/>
   <img src="https://gh.kaos.st/aligo-2.png" alt="aligo preview">
 </p>
 
@@ -80,8 +84,8 @@ Examples
 
 | Branch | Status |
 |--------|--------|
-| `master` | [![Build Status](https://travis-ci.org/essentialkaos/sonar.svg?branch=master)](https://travis-ci.org/essentialkaos/sonar) |
-| `develop` | [![Build Status](https://travis-ci.org/essentialkaos/sonar.svg?branch=develop)](https://travis-ci.org/essentialkaos/sonar) |
+| `master` | [![Build Status](https://travis-ci.org/essentialkaos/aligo.svg?branch=master)](https://travis-ci.org/essentialkaos/aligo) |
+| `develop` | [![Build Status](https://travis-ci.org/essentialkaos/aligo.svg?branch=develop)](https://travis-ci.org/essentialkaos/aligo) |
 
 ### Contributing
 
