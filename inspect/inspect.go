@@ -134,6 +134,7 @@ func getStructInfo(name string, str *types.Struct, pos token.Position) *report.S
 			&report.Field{
 				Name: f.Name(),
 				Type: f.Type().String(),
+				Tag:  str.Tag(i),
 				Size: size,
 			},
 		)
