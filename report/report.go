@@ -32,6 +32,7 @@ type Struct struct {
 type Field struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
+	Tag  string `json:"tag"`
 	Size int64  `json:"size"`
 }
 
