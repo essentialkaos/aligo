@@ -23,10 +23,10 @@
     "go/loader",
   ]
   pruneopts = "UT"
-  revision = "202502a5a9245830b5ec7b877e26b67760da8e67"
+  revision = "eacb66d2a7c3d6b93b39f7224e6bef6a44cbe70e"
 
 [[projects]]
-  digest = "1:423b04404814d6f01acde511a3170a56f24bfaa031286e9c39a769adcf5e01fa"
+  digest = "1:35c05a187cbcdec37742a5a01942b1dbdb4668a72d354ac6cf7d53b26354936b"
   name = "pkg.re/essentialkaos/ek.v10"
   packages = [
     "env",
@@ -42,8 +42,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "b2d1abc129243343f9b6b3d1f36b9c2f2c80d760"
-  version = "v10.8.0"
+  revision = "8b2e8e5ebba8fe9e5d0f96c2bba3850697e82c84"
+  version = "v10.11.0"
 
 [solve-meta]
   analyzer-name = "dep"

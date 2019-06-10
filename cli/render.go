@@ -100,7 +100,7 @@ func Check(r *report.Report, detailed bool) bool {
 	}
 
 	if !hasProblems {
-		fmtc.Println("{g}All structs is well aligned{!}")
+		fmtc.Println("{g}All structs are well aligned{!}")
 	} else {
 		fmtutil.Separator(true)
 		fmtc.NewLine()
