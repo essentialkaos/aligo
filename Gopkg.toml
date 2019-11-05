@@ -7,8 +7,8 @@
   name = "golang.org/x/tools"
 
 [[constraint]]
-  name = "pkg.re/essentialkaos/ek.v10"
-  version = "10.8.0"
+  name = "pkg.re/essentialkaos/ek.v11"
+  version = "11.2.1"
 
 [prune]
   go-tests = true

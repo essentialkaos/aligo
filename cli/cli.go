@@ -13,12 +13,12 @@ import (
 	"os"
 	"runtime"
 
-	"pkg.re/essentialkaos/ek.v10/fmtc"
-	"pkg.re/essentialkaos/ek.v10/fmtutil"
-	"pkg.re/essentialkaos/ek.v10/options"
-	"pkg.re/essentialkaos/ek.v10/strutil"
-	"pkg.re/essentialkaos/ek.v10/usage"
-	"pkg.re/essentialkaos/ek.v10/usage/update"
+	"pkg.re/essentialkaos/ek.v11/fmtc"
+	"pkg.re/essentialkaos/ek.v11/fmtutil"
+	"pkg.re/essentialkaos/ek.v11/options"
+	"pkg.re/essentialkaos/ek.v11/strutil"
+	"pkg.re/essentialkaos/ek.v11/usage"
+	"pkg.re/essentialkaos/ek.v11/usage/update"
 
 	"github.com/essentialkaos/aligo/inspect"
 )
@@ -28,7 +28,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.1.1"
+	VER  = "1.2.0"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 

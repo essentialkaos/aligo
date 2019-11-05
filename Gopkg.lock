@@ -14,7 +14,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0f495a83c85198dba81982ab41a623b39aa79aab211b599b88a24cabf868c201"
+  digest = "1:5b507266031c35e0b72a9cc799ab81ecb876b7014260e5b90537a27cb557729e"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -23,11 +23,11 @@
     "go/loader",
   ]
   pruneopts = "UT"
-  revision = "eacb66d2a7c3d6b93b39f7224e6bef6a44cbe70e"
+  revision = "ea203083f5768a3d06cd6a3886ae25da58785b50"
 
 [[projects]]
-  digest = "1:35c05a187cbcdec37742a5a01942b1dbdb4668a72d354ac6cf7d53b26354936b"
-  name = "pkg.re/essentialkaos/ek.v10"
+  digest = "1:5054644138ba1d8f3d297ade411c2708eb364a1fbe26ba38f75f3ebd3d4abc51"
+  name = "pkg.re/essentialkaos/ek.v11"
   packages = [
     "env",
     "fmtc",
@@ -42,8 +42,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "8b2e8e5ebba8fe9e5d0f96c2bba3850697e82c84"
-  version = "v10.11.0"
+  revision = "185126fa173707ff7e3cbeec36054ea4cb0078a9"
+  version = "v11.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -51,13 +51,13 @@
   input-imports = [
     "github.com/kisielk/gotool",
     "golang.org/x/tools/go/loader",
-    "pkg.re/essentialkaos/ek.v10/fmtc",
-    "pkg.re/essentialkaos/ek.v10/fmtutil",
-    "pkg.re/essentialkaos/ek.v10/mathutil",
-    "pkg.re/essentialkaos/ek.v10/options",
-    "pkg.re/essentialkaos/ek.v10/strutil",
-    "pkg.re/essentialkaos/ek.v10/usage",
-    "pkg.re/essentialkaos/ek.v10/usage/update",
+    "pkg.re/essentialkaos/ek.v11/fmtc",
+    "pkg.re/essentialkaos/ek.v11/fmtutil",
+    "pkg.re/essentialkaos/ek.v11/mathutil",
+    "pkg.re/essentialkaos/ek.v11/options",
+    "pkg.re/essentialkaos/ek.v11/strutil",
+    "pkg.re/essentialkaos/ek.v11/usage",
+    "pkg.re/essentialkaos/ek.v11/usage/update",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
