@@ -23,7 +23,7 @@
     "go/loader",
   ]
   pruneopts = "UT"
-  revision = "ea203083f5768a3d06cd6a3886ae25da58785b50"
+  revision = "9611592c72f63638cf256c3dcd605a106f4aa79d"
 
 [[projects]]
   digest = "1:5054644138ba1d8f3d297ade411c2708eb364a1fbe26ba38f75f3ebd3d4abc51"
@@ -42,8 +42,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "185126fa173707ff7e3cbeec36054ea4cb0078a9"
-  version = "v11.2.1"
+  revision = "c43198a14f2d2cd0c26ad490f2a632602f1f2b3e"
+  version = "v11.3.0"
 
 [solve-meta]
   analyzer-name = "dep"
