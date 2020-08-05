@@ -4,8 +4,8 @@
   <a href="https://travis-ci.com/essentialkaos/aligo"><img src="https://travis-ci.com/essentialkaos/aligo.svg?branch=master" alt="TravisCI" /></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-aligo-master"><img alt="codebeat badge" src="https://codebeat.co/badges/18a359f5-50dd-4bfc-95b2-07dee23d018a" /></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/aligo"><img src="https://goreportcard.com/badge/github.com/essentialkaos/aligo" alt="GoReportCard" /></a>
-  <a href="https://github.com/essentialkaos//actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos//workflows/CodeQL/badge.svg" /></a>
-  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg" alt="License" /></a>
+  <a href="https://github.com/essentialkaos/aligo/actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos/aligo/workflows/CodeQL/badge.svg" /></a>
+  <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
 <p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#thanks">Thanks</a> • <a href="#license">License</a></p>
@@ -103,6 +103,6 @@ We would like to thank:
 
 ### License
 
-[EKOL](https://essentialkaos.com/ekol)
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 <p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>
