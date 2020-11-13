@@ -200,11 +200,11 @@ func genCompletion() int {
 
 	switch options.GetS(OPT_COMPLETION) {
 	case "bash":
-		fmt.Printf(bash.Generate(info, "bibop"))
+		fmt.Printf(bash.Generate(info, "aligo"))
 	case "fish":
-		fmt.Printf(fish.Generate(info, "bibop"))
+		fmt.Printf(fish.Generate(info, "aligo"))
 	case "zsh":
-		fmt.Printf(zsh.Generate(info, optMap, "bibop"))
+		fmt.Printf(zsh.Generate(info, optMap, "aligo"))
 	default:
 		return 1
 	}
