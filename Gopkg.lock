@@ -14,7 +14,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5b507266031c35e0b72a9cc799ab81ecb876b7014260e5b90537a27cb557729e"
+  digest = "1:6e2cc502091c1a080a4a616653eb09f4fc0ea32c026611783f58dfe806e5c42c"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -23,27 +23,33 @@
     "go/loader",
   ]
   pruneopts = "UT"
-  revision = "9611592c72f63638cf256c3dcd605a106f4aa79d"
+  revision = "eeaa07dd769687291ac8e71ec39a7db382b22b65"
 
 [[projects]]
-  digest = "1:5054644138ba1d8f3d297ade411c2708eb364a1fbe26ba38f75f3ebd3d4abc51"
-  name = "pkg.re/essentialkaos/ek.v11"
+  digest = "1:f441f2cb9f8394fa772d51f7e4f186905da71d3e52dd5ece36569b36639ad746"
+  name = "pkg.re/essentialkaos/ek.v12"
   packages = [
     "env",
     "fmtc",
     "fmtutil",
     "mathutil",
     "options",
+    "pluralize",
     "req",
     "strutil",
     "terminal/window",
+    "timeutil",
     "usage",
+    "usage/completion/bash",
+    "usage/completion/fish",
+    "usage/completion/zsh",
+    "usage/man",
     "usage/update",
     "version",
   ]
   pruneopts = "UT"
-  revision = "c43198a14f2d2cd0c26ad490f2a632602f1f2b3e"
-  version = "v11.3.0"
+  revision = "f5be0b2efabbb624246ed395ede96a96dbd9c563"
+  version = "v12.10.0"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -51,13 +57,17 @@
   input-imports = [
     "github.com/kisielk/gotool",
     "golang.org/x/tools/go/loader",
-    "pkg.re/essentialkaos/ek.v11/fmtc",
-    "pkg.re/essentialkaos/ek.v11/fmtutil",
-    "pkg.re/essentialkaos/ek.v11/mathutil",
-    "pkg.re/essentialkaos/ek.v11/options",
-    "pkg.re/essentialkaos/ek.v11/strutil",
-    "pkg.re/essentialkaos/ek.v11/usage",
-    "pkg.re/essentialkaos/ek.v11/usage/update",
+    "pkg.re/essentialkaos/ek.v12/fmtc",
+    "pkg.re/essentialkaos/ek.v12/fmtutil",
+    "pkg.re/essentialkaos/ek.v12/mathutil",
+    "pkg.re/essentialkaos/ek.v12/options",
+    "pkg.re/essentialkaos/ek.v12/strutil",
+    "pkg.re/essentialkaos/ek.v12/usage",
+    "pkg.re/essentialkaos/ek.v12/usage/completion/bash",
+    "pkg.re/essentialkaos/ek.v12/usage/completion/fish",
+    "pkg.re/essentialkaos/ek.v12/usage/completion/zsh",
+    "pkg.re/essentialkaos/ek.v12/usage/man",
+    "pkg.re/essentialkaos/ek.v12/usage/update",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

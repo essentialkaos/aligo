@@ -8,7 +8,7 @@
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
-<p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#thanks">Thanks</a> • <a href="#license">License</a></p>
+<p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#command-line-completion">Command-line completion</a> • <a href="#man-documentation">Man documentation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#thanks">Thanks</a> • <a href="#license">License</a></p>
 
 <br/>
 
@@ -25,13 +25,7 @@
 
 #### From source
 
-Before the initial install, allow git to use redirects for [pkg.re](https://github.com/essentialkaos/pkgre) service (_reason why you should do this described [here](https://github.com/essentialkaos/pkgre#git-support)_):
-
-```
-git config --global http.https://pkg.re.followRedirects true
-```
-
-To build the `aligo` from scratch, make sure you have a working Go 1.10+ workspace (_[instructions](https://golang.org/doc/install)_), then:
+To build the `aligo` from scratch, make sure you have a working Go 1.12+ workspace (_[instructions](https://golang.org/doc/install)_), then:
 
 ```
 go get github.com/essentialkaos/aligo
@@ -49,6 +43,35 @@ You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](
 
 ```bash
 bash <(curl -fsSL https://apps.kaos.st/get) aligo
+```
+
+### Command-line completion
+
+You can generate completion for `bash`, `zsh` or `fish` shell.
+
+Bash:
+```bash
+sudo aligo --completion=bash 1> /etc/bash_completion.d/aligo
+```
+
+
+ZSH:
+```bash
+sudo aligo --completion=zsh 1> /usr/share/zsh/site-functions/aligo
+```
+
+
+Fish:
+```bash
+sudo aligo --completion=fish 1> /usr/share/fish/vendor_completions.d/aligo.fish
+```
+
+### Man documentation
+
+You can generate man page for aligo using next command:
+
+```bash
+aligo --generate-man | sudo gzip > /usr/share/man/man1/aligo.1.gz
 ```
 
 ### Usage
