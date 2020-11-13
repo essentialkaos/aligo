@@ -8,17 +8,22 @@ package cli
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 import (
+	"fmt"
 	"go/build"
 	"go/types"
 	"os"
 	"runtime"
 
-	"pkg.re/essentialkaos/ek.v11/fmtc"
-	"pkg.re/essentialkaos/ek.v11/fmtutil"
-	"pkg.re/essentialkaos/ek.v11/options"
-	"pkg.re/essentialkaos/ek.v11/strutil"
-	"pkg.re/essentialkaos/ek.v11/usage"
-	"pkg.re/essentialkaos/ek.v11/usage/update"
+	"pkg.re/essentialkaos/ek.v12/fmtc"
+	"pkg.re/essentialkaos/ek.v12/fmtutil"
+	"pkg.re/essentialkaos/ek.v12/options"
+	"pkg.re/essentialkaos/ek.v12/strutil"
+	"pkg.re/essentialkaos/ek.v12/usage"
+	"pkg.re/essentialkaos/ek.v12/usage/completion/bash"
+	"pkg.re/essentialkaos/ek.v12/usage/completion/fish"
+	"pkg.re/essentialkaos/ek.v12/usage/completion/zsh"
+	"pkg.re/essentialkaos/ek.v12/usage/man"
+	"pkg.re/essentialkaos/ek.v12/usage/update"
 
 	"github.com/essentialkaos/aligo/inspect"
 )
@@ -28,7 +33,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.2.0"
+	VER  = "1.3.0"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 
@@ -40,6 +45,9 @@ const (
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
+
+	OPT_COMPLETION   = "completion"
+	OPT_GENERATE_MAN = "generate-man"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -52,6 +60,9 @@ var optMap = options.Map{
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
 	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
+
+	OPT_COMPLETION:   {},
+	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -72,15 +83,24 @@ func Init() {
 		os.Exit(1)
 	}
 
-	configureUI()
-
-	if options.GetB(OPT_HELP) || len(args) < 2 {
-		showUsage()
-		return
+	if options.Has(OPT_COMPLETION) {
+		os.Exit(genCompletion())
 	}
+
+	if options.Has(OPT_GENERATE_MAN) {
+		genMan()
+		os.Exit(0)
+	}
+
+	configureUI()
 
 	if options.GetB(OPT_VER) {
 		showAbout()
+		return
+	}
+
+	if options.GetB(OPT_HELP) || len(args) < 2 {
+		showUsage()
 		return
 	}
 
@@ -164,8 +184,46 @@ func printErrorAndExit(f string, a ...interface{}) {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// showUsage print usage info
+// showUsage prints usage info
 func showUsage() {
+	genUsage().Render()
+}
+
+// showAbout prints info about version
+func showAbout() {
+	genAbout().Render()
+}
+
+// genCompletion generates completion for different shells
+func genCompletion() int {
+	info := genUsage()
+
+	switch options.GetS(OPT_COMPLETION) {
+	case "bash":
+		fmt.Printf(bash.Generate(info, "bibop"))
+	case "fish":
+		fmt.Printf(fish.Generate(info, "bibop"))
+	case "zsh":
+		fmt.Printf(zsh.Generate(info, optMap, "bibop"))
+	default:
+		return 1
+	}
+
+	return 0
+}
+
+// genMan generates man page
+func genMan() {
+	fmt.Println(
+		man.Generate(
+			genUsage(),
+			genAbout(),
+		),
+	)
+}
+
+// genUsage generates usage info
+func genUsage() *usage.Info {
 	info := usage.NewInfo("", "package…")
 
 	info.AddCommand("check", "Check package for alignment problems")
@@ -191,11 +249,11 @@ func showUsage() {
 		"Show info about PostMessageParameters struct",
 	)
 
-	info.Render()
+	return info
 }
 
-// showAbout print info about version
-func showAbout() {
+// genAbout generates info about version
+func genAbout() *usage.About {
 	about := &usage.About{
 		App:           APP,
 		Version:       VER,
@@ -206,5 +264,5 @@ func showAbout() {
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/aligo", update.GitHubChecker},
 	}
 
-	about.Render()
+	return about
 }

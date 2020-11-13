@@ -12,10 +12,10 @@ import (
 	"path"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v11/fmtc"
-	"pkg.re/essentialkaos/ek.v11/fmtutil"
-	"pkg.re/essentialkaos/ek.v11/mathutil"
-	"pkg.re/essentialkaos/ek.v11/strutil"
+	"pkg.re/essentialkaos/ek.v12/fmtc"
+	"pkg.re/essentialkaos/ek.v12/fmtutil"
+	"pkg.re/essentialkaos/ek.v12/mathutil"
+	"pkg.re/essentialkaos/ek.v12/strutil"
 
 	"github.com/essentialkaos/aligo/inspect"
 	"github.com/essentialkaos/aligo/report"
