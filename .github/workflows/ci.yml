@@ -27,6 +27,7 @@ jobs:
       - name: Setup PATH
         run: |
           echo "GOPATH=${{ github.workspace }}" >> "$GITHUB_ENV"
+          echo "GOBIN=${{ github.workspace }}/bin" >> "$GITHUB_ENV"
           echo "${{ github.workspace }}/bin" >> "$GITHUB_PATH"
 
       - name: Checkout
