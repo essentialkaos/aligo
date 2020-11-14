@@ -32,6 +32,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          path: src/github.com/essentialkaos/aligo
 
       - name: Install deps
         run: |
@@ -40,6 +42,8 @@ jobs:
 
       - name: Download dependencies
         run: make deps
+        working-directory: src/github.com/essentialkaos/aligo
 
       - name: Run tests
         run: make all
+        working-directory: src/github.com/essentialkaos/aligo
