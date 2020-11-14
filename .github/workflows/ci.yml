@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SRC_DIR: $(echo "src/github.com/$GITHUB_REPOSITORY")
+      SRC_DIR: src/github.com/${{ github.repository }}
 
     strategy:
       matrix:
