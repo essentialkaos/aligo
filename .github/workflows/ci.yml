@@ -34,7 +34,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install deps
-        run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+        run: |
+          mkdir -p $GOBIN
+          curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
       - name: Download dependencies
         run: make deps
