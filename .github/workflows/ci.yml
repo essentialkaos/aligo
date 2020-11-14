@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: '0 18 * * 0'
+
+jobs:
+  Ubuntu:
+    name: Linux
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        go: [ '1.14.x', '1.15.x' ]
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+        id: go
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install deps
+        run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+
+      - name: Download dependencies
+        run: make deps
+
+      - name: Run tests
+        run: make all
