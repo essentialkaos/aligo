@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/aligo.svg"/></a></p>
 
 <p align="center">
-  <a href="https://travis-ci.com/essentialkaos/aligo"><img src="https://travis-ci.com/essentialkaos/aligo.svg?branch=master" alt="TravisCI" /></a>
+  <a href="https://github.com/essentialkaos/aligo/actions"><img src="https://github.com/essentialkaos/aligo/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-aligo-master"><img alt="codebeat badge" src="https://codebeat.co/badges/18a359f5-50dd-4bfc-95b2-07dee23d018a" /></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/aligo"><img src="https://goreportcard.com/badge/github.com/essentialkaos/aligo" alt="GoReportCard" /></a>
   <a href="https://github.com/essentialkaos/aligo/actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos/aligo/workflows/CodeQL/badge.svg" /></a>
@@ -110,8 +110,8 @@ Examples
 
 | Branch | Status |
 |--------|--------|
-| `master` | [![Build Status](https://travis-ci.com/essentialkaos/aligo.svg?branch=master)](https://travis-ci.com/essentialkaos/aligo) |
-| `develop` | [![Build Status](https://travis-ci.com/essentialkaos/aligo.svg?branch=develop)](https://travis-ci.com/essentialkaos/aligo) |
+| `master` | ![CI](https://github.com/essentialkaos/aligo/workflows/CI/badge.svg?branch=master) |
+| `develop` | ![CI](https://github.com/essentialkaos/aligo/workflows/CI/badge.svg?branch=develop) |
 
 ### Contributing
 
