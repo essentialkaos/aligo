@@ -72,6 +72,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          path: ${{env.SRC_DIR}}
 
       - name: Install deps
         run: |
