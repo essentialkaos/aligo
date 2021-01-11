@@ -33,7 +33,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.3.1"
+	VER  = "1.4.0"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 
@@ -159,7 +159,7 @@ func process(args []string) {
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), options.GetB(OPT_DETAILED), true)
 		} else {
-			if !Check(report, options.GetB(OPT_DETAILED)) {
+			if Check(report, options.GetB(OPT_DETAILED)) {
 				os.Exit(1)
 			}
 		}

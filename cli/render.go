@@ -68,7 +68,7 @@ func PrintStruct(r *report.Report, strName string, detailed, optimal bool) {
 		return
 	}
 
-	fmtutil.Separator(false, pkg.Path)
+	printPackageSeparator(pkg.Path)
 
 	printStructInfo(str, pkg.Path, detailed, optimal)
 
@@ -111,9 +111,18 @@ func Check(r *report.Report, detailed bool) bool {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// printPackageSeparator prints separator with package name
+func printPackageSeparator(path string) {
+	if strings.HasPrefix(path, ".") {
+		path = "{GOPATH}" + path[1:]
+	}
+
+	fmtutil.Separator(false, path)
+}
+
 // printPackageInfo prints package info
 func printPackageInfo(pkg *report.Package) {
-	fmtutil.Separator(false, pkg.Path)
+	printPackageSeparator(pkg.Path)
 
 	for _, str := range pkg.Structs {
 		printStructInfo(str, pkg.Path, true, false)
@@ -122,7 +131,7 @@ func printPackageInfo(pkg *report.Package) {
 
 // printPackageProblems prints problems in package
 func printPackageProblems(pkg *report.Package, detailed bool) {
-	fmtutil.Separator(false, pkg.Path)
+	printPackageSeparator(pkg.Path)
 
 	for _, str := range pkg.Structs {
 		if !isStructHasProblems(str) {
@@ -169,7 +178,7 @@ func printStructInfo(str *report.Struct, pkgPath string, detailed, optimal bool)
 
 // printDetailedFieldsInfo prints verbose fields info
 func printDetailedFieldsInfo(fields []*report.Field, pkgPath string) {
-	f := getFieldFormat(fields, pkgPath, false, false)
+	f := getFieldFormat(fields, pkgPath, false)
 
 	counter := int64(0)
 	maxAlign := inspect.GetMaxAlign()
@@ -177,7 +186,7 @@ func printDetailedFieldsInfo(fields []*report.Field, pkgPath string) {
 	for index, field := range fields {
 		fType := getPrettyFieldType(field.Type, pkgPath)
 
-		printFieldInfo(f, field.Name, fType, field.Tag)
+		printFieldInfo(f, field.Name, fType, field.Tag, field.Comment)
 
 		fmtc.Printf(strings.Repeat("  ", int(counter+1)))
 
@@ -188,7 +197,7 @@ func printDetailedFieldsInfo(fields []*report.Field, pkgPath string) {
 
 			if counter == maxAlign {
 				if i+1 != field.Size {
-					printFieldInfo("\n"+f+"  ", "", "", "")
+					printFieldInfo("\n"+f+"  ", "", "", "", "")
 				}
 				counter = 0
 			}
@@ -207,56 +216,69 @@ func printDetailedFieldsInfo(fields []*report.Field, pkgPath string) {
 
 // printSimpleFieldsInfo prints verbose fields info
 func printSimpleFieldsInfo(fields []*report.Field, pkgPath string) {
-	f := getFieldFormat(fields, pkgPath, true, true) + "\n"
+	f := getFieldFormat(fields, pkgPath, true) + "\n"
 
 	for _, field := range fields {
 		fType := getPrettyFieldType(field.Type, pkgPath)
-		printFieldInfo(f, field.Name, fType, field.Tag)
+		printFieldInfo(f, field.Name, fType, field.Tag, field.Comment)
 	}
 }
 
 // getFieldFormat generate format string for field output
-func getFieldFormat(fields []*report.Field, pkgPath string, short, withTags bool) string {
-	var lName, lType, lTag int
+func getFieldFormat(fields []*report.Field, pkgPath string, short bool) string {
+	var result string
+	var lName, lType, lTag, lComm int
 
 	for _, field := range fields {
 		fType := getPrettyFieldType(field.Type, pkgPath)
 		lName = mathutil.Max(lName, len(field.Name))
 		lType = mathutil.Max(lType, len(strutil.Ellipsis(fType, MAX_TYPE_SIZE)))
 		lTag = mathutil.Max(lTag, len(field.Tag))
+		lComm = mathutil.Max(lComm, len(field.Comment))
 	}
 
 	if lTag > 0 {
 		lTag += 2
 	}
 
-	if !withTags {
-		lTag = 0
+	result += fmt.Sprintf("  %%-%ds", lName)
+
+	if lTag > 0 || lComm > 0 {
+		result += fmt.Sprintf(" {*}%%-%ds{!}", lType)
+	} else {
+		result += fmt.Sprintf(" {*}%%s{!}")
 	}
 
-	switch {
-	case lTag > 0 && short:
-		return fmt.Sprintf("  %%-%ds {*}%%-%ds{!} {y}%%s{!}", lName, lType)
-	case lTag > 0 && !short:
-		return fmt.Sprintf("  %%-%ds {*}%%-%ds{!} {y}%%-%ds{!}", lName, lType, lTag)
-	case lTag == 0 && short:
-		return fmt.Sprintf("  %%-%ds {*}%%s{!}", lName)
-	default:
-		return fmt.Sprintf("  %%-%ds {*}%%-%ds{!}", lName, lType)
+	if lTag > 0 {
+		if lComm > 0 {
+			result += fmt.Sprintf(" {y}%%-%ds{!}", lTag)
+		} else {
+			result += fmt.Sprintf(" {y}%%s{!}")
+		}
 	}
+
+	if lComm > 0 {
+		result += fmt.Sprintf(" {s-}// %%s{!}")
+	}
+
+	return result
 }
 
 // printFieldInfo prints field info
-func printFieldInfo(format, name, typ, tag string) {
+func printFieldInfo(format, name, typ, tag, comm string) {
 	var fTag string
 
 	if tag != "" {
 		fTag = "`" + tag + "`"
 	}
 
-	switch strings.Count(format, "%") {
-	case 3:
+	switch {
+	case tag != "" && comm != "":
+		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE), fTag, comm)
+	case tag != "" && comm == "":
 		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE), fTag)
+	case tag == "" && comm != "":
+		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE), comm)
 	default:
 		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE))
 	}
