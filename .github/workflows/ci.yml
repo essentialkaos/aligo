@@ -9,7 +9,7 @@ on:
     - cron: '0 18 * * 0'
 
 jobs:
-  Ubuntu:
+  Go:
     name: Linux
     runs-on: ubuntu-latest
 
@@ -50,3 +50,24 @@ jobs:
       - name: Run tests
         working-directory: ${{env.SRC_DIR}}
         run: make all
+
+  Aligo:
+    name: Aligo
+    runs-on: ubuntu-latest
+
+    needs: Go
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Aligo
+        run: |
+          wget https://apps.kaos.st/aligo/latest/linux/x86_64/aligo
+          chmod +x aligo
+
+      - name: Print Aligo version info
+        run: ./aligo --version
+
+      - name: Check Go structs alignment info
+        run: ./aligo check .
