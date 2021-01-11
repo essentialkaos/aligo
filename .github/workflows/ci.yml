@@ -70,4 +70,4 @@ jobs:
         run: ./aligo --version
 
       - name: Check Go structs alignment info
-        run: ./aligo check .
+        run: ./aligo check ./...
