@@ -10,7 +10,7 @@ on:
 
 jobs:
   Go:
-    name: Linux
+    name: Go
     runs-on: ubuntu-latest
 
     env:
