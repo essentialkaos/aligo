@@ -30,10 +30,11 @@ type Struct struct {
 
 // Field contains info about field
 type Field struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Tag  string `json:"tag"`
-	Size int64  `json:"size"`
+	Name    string `json:"name"`
+	Type    string `json:"type"`
+	Tag     string `json:"tag"`
+	Comment string `json:"comment"`
+	Size    int64  `json:"size"`
 }
 
 // Position contains info about struct position

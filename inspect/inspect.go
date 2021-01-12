@@ -10,10 +10,12 @@ package inspect
 import (
 	"fmt"
 	"go/ast"
+	"go/parser"
 	"go/token"
 	"go/types"
 	"path"
 	"sort"
+	"strings"
 
 	"github.com/kisielk/gotool"
 
@@ -43,7 +45,7 @@ func ProcessSources(dirs []string) (*report.Report, error) {
 
 	fileSet = token.NewFileSet()
 
-	loaderConfig := &loader.Config{}
+	loaderConfig := &loader.Config{ParserMode: parser.ParseComments}
 	loaderConfig.Fset = fileSet
 
 	for _, importPath := range importPaths {
@@ -105,7 +107,7 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 					strPos = fileSet.Position(nt.TokPos)
 				}
 			case *ast.StructType:
-				str := getStructInfo(strName, pkg.Types[nt].Type.(*types.Struct), strPos)
+				str := getStructInfo(strName, pkg.Types[nt].Type.(*types.Struct), nt, strPos)
 				result.Structs = append(result.Structs, str)
 			}
 
@@ -117,7 +119,7 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 }
 
 // getStructInfo parses struct info and calculates size
-func getStructInfo(name string, str *types.Struct, pos token.Position) *report.Struct {
+func getStructInfo(name string, str *types.Struct, strType *ast.StructType, pos token.Position) *report.Struct {
 	result := &report.Struct{
 		Name:     name,
 		Position: convertPosition(pos),
@@ -128,14 +130,16 @@ func getStructInfo(name string, str *types.Struct, pos token.Position) *report.S
 	for i := 0; i < numFields; i++ {
 		f := str.Field(i)
 		size := Sizes.Sizeof(f.Type())
+		comm := strings.Trim(strType.Fields.List[i].Comment.Text(), "\n\r")
 
 		result.Fields = append(
 			result.Fields,
 			&report.Field{
-				Name: f.Name(),
-				Type: f.Type().String(),
-				Tag:  str.Tag(i),
-				Size: size,
+				Name:    f.Name(),
+				Type:    f.Type().String(),
+				Tag:     str.Tag(i),
+				Comment: comm,
+				Size:    size,
 			},
 		)
 	}
