@@ -96,5 +96,4 @@ jobs:
         run: ./aligo --version
 
       - name: Check Go structs alignment info
-        working-directory: ${{env.SRC_DIR}}
-        run: ./aligo check ./...
+        run: ./aligo check ${{env.SRC_DIR}}/...
