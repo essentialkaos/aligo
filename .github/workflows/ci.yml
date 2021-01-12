@@ -57,6 +57,9 @@ jobs:
 
     needs: Go
 
+    env:
+      SRC_DIR: src/github.com/${{ github.repository }}
+
     steps:
       - name: Set up Go
         uses: actions/setup-go@v2
