@@ -88,12 +88,14 @@ jobs:
         run: make deps
 
       - name: Install Aligo
+        working-directory: ${{env.SRC_DIR}}
         run: |
           wget https://apps.kaos.st/aligo/latest/linux/x86_64/aligo
           chmod +x aligo
 
       - name: Print Aligo version info
+        working-directory: ${{env.SRC_DIR}}
         run: ./aligo --version
 
       - name: Check Go structs alignment info
-        run: ./aligo check ${{env.SRC_DIR}}/...
+        run: ./aligo check ./...
