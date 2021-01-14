@@ -234,6 +234,7 @@ func formatValueType(typ string, mappings map[string]string) string {
 	return typ
 }
 
+// formatPackageName formats package name
 func formatPackageName(p string) string {
 	p = path.Base(p)
 	p = strings.Replace(p, "go-", "", -1)
