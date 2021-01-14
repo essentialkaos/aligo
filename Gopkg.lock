@@ -14,7 +14,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6e2cc502091c1a080a4a616653eb09f4fc0ea32c026611783f58dfe806e5c42c"
+  digest = "1:f1a93c3cbd695f84e5db8c5502eec37cf75a82be9aba277b856134578ea599c8"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -23,10 +23,10 @@
     "go/loader",
   ]
   pruneopts = "UT"
-  revision = "eeaa07dd769687291ac8e71ec39a7db382b22b65"
+  revision = "d78b04bdf963623721afc1b2631458123ebaddb0"
 
 [[projects]]
-  digest = "1:f441f2cb9f8394fa772d51f7e4f186905da71d3e52dd5ece36569b36639ad746"
+  digest = "1:3e7ac2c800be24c2b9f74d53f0f0d94d4fde173a3410a8112fa61d6bc6549ad2"
   name = "pkg.re/essentialkaos/ek.v12"
   packages = [
     "env",
@@ -48,8 +48,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "f5be0b2efabbb624246ed395ede96a96dbd9c563"
-  version = "v12.10.0"
+  revision = "b4a6c819b12fb195b4b458d1a713c7eb8536f287"
+  version = "v12.12.0"
 
 [solve-meta]
   analyzer-name = "dep"
