@@ -23,7 +23,7 @@ type Struct struct {
 	Name          string   `json:"name"`
 	Position      Position `json:"position"`
 	Fields        []*Field `json:"fields"`
-	OptimalFields []*Field `json:"optimal_fields"` // nil if Size == OptimalSize
+	AlignedFields []*Field `json:"aligned_fields"` // nil if Size == OptimalSize
 	Size          int64    `json:"size"`
 	OptimalSize   int64    `json:"optimal_size"`
 }

@@ -35,6 +35,16 @@ var fileSet *token.FileSet
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+type structInfo struct {
+	Name     string
+	Type     *types.Struct
+	AST      *ast.StructType
+	Pos      token.Position
+	Mappings map[string]string
+}
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
 // ProcessSources starts sources processing
 func ProcessSources(dirs []string) (*report.Report, error) {
 	importPaths := gotool.ImportPaths(dirs)
@@ -87,6 +97,8 @@ func processProgram(prog *loader.Program) (*report.Report, error) {
 		result.Packages = append(result.Packages, pkgInfo)
 	}
 
+	sort.Sort(pkgSlice(result.Packages))
+
 	return result, nil
 }
 
@@ -97,6 +109,10 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 
 	result := &report.Package{Path: pkg.Pkg.Path()}
 
+	mappings := map[string]string{
+		pkg.Pkg.Path() + ".": "",
+	}
+
 	for _, file := range pkg.Files {
 		ast.Inspect(file, func(node ast.Node) bool {
 			switch nt := node.(type) {
@@ -106,9 +122,28 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 					strName = decl.Name.Name
 					strPos = fileSet.Position(nt.TokPos)
 				}
+
+			case *ast.ImportSpec:
+				ntPath := strings.Trim(nt.Path.Value, "\"")
+
+				if strings.Contains(ntPath, "/") {
+					if nt.Name == nil {
+						mappings[ntPath] = formatPackageName(ntPath)
+					} else {
+						mappings[ntPath] = nt.Name.Name
+					}
+				}
+
 			case *ast.StructType:
-				str := getStructInfo(strName, pkg.Types[nt].Type.(*types.Struct), nt, strPos)
-				result.Structs = append(result.Structs, str)
+				info := &structInfo{
+					Name:     strName,
+					Type:     pkg.Types[nt].Type.(*types.Struct),
+					AST:      nt,
+					Pos:      strPos,
+					Mappings: mappings,
+				}
+
+				result.Structs = append(result.Structs, getStructInfo(info))
 			}
 
 			return true
@@ -119,38 +154,40 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 }
 
 // getStructInfo parses struct info and calculates size
-func getStructInfo(name string, str *types.Struct, strType *ast.StructType, pos token.Position) *report.Struct {
+func getStructInfo(info *structInfo) *report.Struct {
 	result := &report.Struct{
-		Name:     name,
-		Position: convertPosition(pos),
+		Name:     info.Name,
+		Position: convertPosition(info.Pos),
 	}
 
-	numFields := str.NumFields()
+	numFields := info.Type.NumFields()
 
 	for i := 0; i < numFields; i++ {
-		f := str.Field(i)
+		f := info.Type.Field(i)
+		fs := info.AST.Fields.List[i]
 		size := Sizes.Sizeof(f.Type())
-		comm := strings.Trim(strType.Fields.List[i].Comment.Text(), "\n\r")
+		comm := strings.Trim(fs.Comment.Text(), "\n\r")
+		typ := formatValueType(f.Type().String(), info.Mappings)
 
 		result.Fields = append(
 			result.Fields,
 			&report.Field{
 				Name:    f.Name(),
-				Type:    f.Type().String(),
-				Tag:     str.Tag(i),
+				Type:    typ,
+				Tag:     info.Type.Tag(i),
 				Comment: comm,
 				Size:    size,
 			},
 		)
 	}
 
-	result.Size = Sizes.Sizeof(str)
+	result.Size = Sizes.Sizeof(info.Type)
 
-	optSize, optFields := getOptimalFields(str, result.Fields)
+	alnSize, alnFields := getAlignedFields(info.Type, result.Fields)
 
-	if optSize != result.Size {
-		result.OptimalSize = optSize
-		result.OptimalFields = optFields
+	if alnSize != result.Size {
+		result.OptimalSize = alnSize
+		result.AlignedFields = alnFields
 	} else {
 		result.OptimalSize = result.Size
 	}
@@ -158,8 +195,8 @@ func getStructInfo(name string, str *types.Struct, strType *ast.StructType, pos 
 	return result
 }
 
-// getOptimalFields tries to find optimal field order
-func getOptimalFields(str *types.Struct, origFields []*report.Field) (int64, []*report.Field) {
+// getAlignedFields tries to find optimal field order
+func getAlignedFields(str *types.Struct, origFields []*report.Field) (int64, []*report.Field) {
 	numFields := len(origFields)
 	fields := append(origFields[:0:0], origFields...)
 	vars := make([]*types.Var, numFields)
@@ -184,6 +221,29 @@ func convertPosition(pos token.Position) report.Position {
 		File: path.Base(pos.Filename),
 		Line: pos.Line,
 	}
+}
+
+// formatValueType formats value type
+func formatValueType(typ string, mappings map[string]string) string {
+	for k, v := range mappings {
+		if strings.Contains(typ, k) {
+			return strings.Replace(typ, k, v, -1)
+		}
+	}
+
+	return typ
+}
+
+func formatPackageName(p string) string {
+	p = path.Base(p)
+	p = strings.Replace(p, "go-", "", -1)
+	p = strings.Replace(p, "go.", "", -1)
+
+	if strings.Contains(p, ".") {
+		p = p[:strings.Index(p, ".")]
+	}
+
+	return p
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -223,5 +283,11 @@ func (s *optimalSorter) Less(i, j int) bool {
 		return false
 	}
 }
+
+type pkgSlice []*report.Package
+
+func (s pkgSlice) Len() int           { return len(s) }
+func (s pkgSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s pkgSlice) Less(i, j int) bool { return s[i].Path < s[j].Path }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
