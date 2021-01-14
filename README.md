@@ -88,7 +88,6 @@ Options
 
   --arch, -a name      Architecture name
   --struct, -s name    Print info only about struct with given name
-  --detailed, -d       Print detailed alignment info (useful with check command)
   --no-color, -nc      Disable colors in output
   --help, -h           Show this help message
   --version, -v        Show version
@@ -103,6 +102,7 @@ Examples
 
   aligo -s PostMessageParameters view .
   Show info about PostMessageParameters struct
+
 
 ```
 
