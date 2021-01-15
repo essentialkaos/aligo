@@ -26,6 +26,7 @@ type Struct struct {
 	AlignedFields []*Field `json:"aligned_fields"` // nil if Size == OptimalSize
 	Size          int64    `json:"size"`
 	OptimalSize   int64    `json:"optimal_size"`
+	Ignore        bool     `json:ignore`
 }
 
 // Field contains info about field

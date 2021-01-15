@@ -338,5 +338,5 @@ func isPackageHasProblems(pkg *report.Package) bool {
 
 // isAlignedStruct returns false if struct has unaligned fields
 func isAlignedStruct(str *report.Struct) bool {
-	return str.Size == str.OptimalSize
+	return str.Size == str.OptimalSize || str.Ignore
 }

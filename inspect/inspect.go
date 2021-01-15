@@ -26,12 +26,12 @@ import (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// Sizes contains info about WordSize and MaxAlign
-var Sizes types.Sizes
+const IGNORE_FLAG = "aligo:ignore"
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-var fileSet *token.FileSet
+// Sizes contains info about WordSize and MaxAlign
+var Sizes types.Sizes
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -41,7 +41,12 @@ type structInfo struct {
 	AST      *ast.StructType
 	Pos      token.Position
 	Mappings map[string]string
+	Skip     bool
 }
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+var fileSet *token.FileSet
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -106,14 +111,14 @@ func processProgram(prog *loader.Program) (*report.Report, error) {
 func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 	var strName string
 	var strPos token.Position
+	var strIgnore bool
 
 	result := &report.Package{Path: pkg.Pkg.Path()}
-
-	mappings := map[string]string{
-		pkg.Pkg.Path() + ".": "",
-	}
+	mappings := map[string]string{pkg.Pkg.Path() + ".": ""}
 
 	for _, file := range pkg.Files {
+		commentMap := ast.NewCommentMap(fileSet, file, file.Comments)
+
 		ast.Inspect(file, func(node ast.Node) bool {
 			switch nt := node.(type) {
 			case *ast.GenDecl:
@@ -121,6 +126,7 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 					decl := nt.Specs[0].(*ast.TypeSpec)
 					strName = decl.Name.Name
 					strPos = fileSet.Position(nt.TokPos)
+					strIgnore = checkIgnoreFlag(commentMap.Filter(nt))
 				}
 
 			case *ast.ImportSpec:
@@ -141,6 +147,7 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 					AST:      nt,
 					Pos:      strPos,
 					Mappings: mappings,
+					Skip:     strIgnore,
 				}
 
 				result.Structs = append(result.Structs, getStructInfo(info))
@@ -245,6 +252,23 @@ func formatPackageName(p string) string {
 	}
 
 	return p
+}
+
+// checkIgnoreFlag checks struct comments for ignore flag
+func checkIgnoreFlag(cm ast.CommentMap) bool {
+	if cm == nil || len(cm.Comments()) == 0 {
+		return false
+	}
+
+	for _, cg := range cm.Comments() {
+		for _, c := range cg.List {
+			if strings.Contains(c.Text, IGNORE_FLAG) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
