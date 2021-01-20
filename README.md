@@ -8,7 +8,7 @@
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
-<p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#command-line-completion">Command-line completion</a> • <a href="#man-documentation">Man documentation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#thanks">Thanks</a> • <a href="#license">License</a></p>
+<p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#command-line-completion">Command-line completion</a> • <a href="#man-documentation">Man documentation</a> • <a href="#faq">FAQ</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#thanks">Thanks</a> • <a href="#license">License</a></p>
 
 <br/>
 
@@ -74,6 +74,21 @@ You can generate man page for aligo using next command:
 aligo --generate-man | sudo gzip > /usr/share/man/man1/aligo.1.gz
 ```
 
+### FAQ
+
+**Q:** I think my struct is well aligned. How can I disable check for it?
+
+**A:** You could add a comment with text `aligo:ignore` for this struct, and _aligo_ will ignore all problems with it. Example:
+
+```go
+// This is my supa-dupa struct
+// aligo:ignore
+type MyStruct struct {
+  A bool
+  B int
+}
+```
+
 ### Usage
 
 ```
@@ -88,7 +103,6 @@ Options
 
   --arch, -a name      Architecture name
   --struct, -s name    Print info only about struct with given name
-  --detailed, -d       Print detailed alignment info (useful with check command)
   --no-color, -nc      Disable colors in output
   --help, -h           Show this help message
   --version, -v        Show version
@@ -103,6 +117,7 @@ Examples
 
   aligo -s PostMessageParameters view .
   Show info about PostMessageParameters struct
+
 
 ```
 

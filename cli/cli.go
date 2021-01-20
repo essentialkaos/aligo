@@ -33,7 +33,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.4.0"
+	VER  = "1.5.0"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 
@@ -41,7 +41,6 @@ const (
 const (
 	OPT_ARCH     = "a:arch"
 	OPT_STRUCT   = "s:struct"
-	OPT_DETAILED = "d:detailed"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -56,7 +55,6 @@ const (
 var optMap = options.Map{
 	OPT_ARCH:     {},
 	OPT_STRUCT:   {},
-	OPT_DETAILED: {Type: options.BOOL},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
 	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
@@ -151,18 +149,20 @@ func process(args []string) {
 	switch cmd {
 	case "view", "v":
 		if options.Has(OPT_STRUCT) {
-			PrintStruct(report, options.GetS(OPT_STRUCT), options.GetB(OPT_DETAILED), false)
+			PrintStruct(report, options.GetS(OPT_STRUCT), false)
 		} else {
 			PrintFull(report)
 		}
+
 	case "check", "c":
 		if options.Has(OPT_STRUCT) {
-			PrintStruct(report, options.GetS(OPT_STRUCT), options.GetB(OPT_DETAILED), true)
+			PrintStruct(report, options.GetS(OPT_STRUCT), true)
 		} else {
-			if Check(report, options.GetB(OPT_DETAILED)) {
+			if Check(report) {
 				os.Exit(1)
 			}
 		}
+
 	default:
 		printErrorAndExit("Command %s is unsupported", cmd)
 	}
@@ -233,7 +233,6 @@ func genUsage() *usage.Info {
 
 	info.AddOption(OPT_ARCH, "Architecture name", "name")
 	info.AddOption(OPT_STRUCT, "Print info only about struct with given name", "name")
-	info.AddOption(OPT_DETAILED, "Print detailed alignment info {s-}(useful with check command){!}")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")

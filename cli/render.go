@@ -9,7 +9,6 @@ package cli
 
 import (
 	"fmt"
-	"path"
 	"strings"
 
 	"pkg.re/essentialkaos/ek.v12/fmtc"
@@ -28,16 +27,24 @@ const MAX_TYPE_SIZE = 32
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+type Renderer struct {
+	format      string
+	hasTags     bool
+	hasComments bool
+	detailed    bool
+}
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
 // PrintFull prints all report info
 func PrintFull(r *report.Report) {
-	if r.IsEmpty() {
-		fmtc.Println("{y}Given package doesn't have any structs{!}")
+	if isEmptyReport(r) {
 		return
 	}
 
 	for _, pkg := range r.Packages {
 		if !pkg.IsEmpty() {
-			printPackageInfo(pkg)
+			printPackageInfo(pkg, false)
 		}
 	}
 
@@ -46,57 +53,45 @@ func PrintFull(r *report.Report) {
 }
 
 // PrintStruct prints info about struct
-func PrintStruct(r *report.Report, strName string, detailed, optimal bool) {
-	if r.IsEmpty() {
-		fmtc.Println("{y}Given package doesn't have any structs{!}")
+func PrintStruct(r *report.Report, strName string, optimal bool) {
+	if isEmptyReport(r) {
 		return
 	}
 
-	switch {
-	case r.IsEmpty():
-		fmtc.Println("{y}Given package doesn't have any structs{!}")
-		return
-	case strName == "":
-		fmtc.Println("{y}You should define struct name{!}")
+	if strName == "" {
+		printWarn("You should define struct name")
 		return
 	}
 
 	pkg, str := findStruct(r, strName)
 
 	if pkg == nil && str == nil {
-		fmtc.Printf("{y}Can't find struct with name {*}%s{!}\n", strName)
-		return
+		printWarn("Can't find struct with name \"%s\"", strName)
 	}
 
 	printPackageSeparator(pkg.Path)
-
-	printStructInfo(str, pkg.Path, detailed, optimal)
+	printStructInfo(str, optimal)
 
 	fmtutil.Separator(true)
 	fmtc.NewLine()
 }
 
 // Check checks report for problems
-func Check(r *report.Report, detailed bool) bool {
-	if r.IsEmpty() {
-		fmtc.Println("{y}Nothing to check - given package doesn't have any structs{!}")
+func Check(r *report.Report) bool {
+	if isEmptyReport(r) {
 		return false
 	}
 
 	var hasProblems bool
 
 	for _, pkg := range r.Packages {
-		if pkg.IsEmpty() {
-			continue
-		}
-
-		if !isPackageHasProblems(pkg) {
+		if pkg.IsEmpty() || !isPackageHasProblems(pkg) {
 			continue
 		}
 
 		hasProblems = true
 
-		printPackageProblems(pkg, detailed)
+		printPackageInfo(pkg, true)
 	}
 
 	if !hasProblems {
@@ -111,6 +106,107 @@ func Check(r *report.Report, detailed bool) bool {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// NewRenderer creates new filed info renderer
+func NewRenderer(fields []*report.Field, detailed bool) *Renderer {
+	r := &Renderer{detailed: detailed}
+
+	var mName, mType, mTag, mComm int
+
+	for _, field := range fields {
+		mName = mathutil.Max(mName, len(field.Name))
+		mType = mathutil.Max(mType, len(strutil.Ellipsis(field.Type, MAX_TYPE_SIZE)))
+		mTag = mathutil.Max(mTag, len(field.Tag))
+		mComm = mathutil.Max(mComm, len(field.Comment))
+	}
+
+	if mTag > 0 {
+		mTag += 2
+	}
+
+	r.format = fmt.Sprintf("  %%-%ds", mName)
+
+	if mTag > 0 || mComm > 0 || !detailed {
+		r.format += fmt.Sprintf(" {*}%%-%ds{!}", mType)
+	} else {
+		r.format += fmt.Sprintf(" {*}%%s{!}")
+	}
+
+	if !detailed {
+		return r
+	}
+
+	if mTag > 0 {
+		r.hasTags = true
+
+		if mComm > 0 {
+			r.format += fmt.Sprintf(" {y}%%-%ds{!}", mTag)
+		} else {
+			r.format += fmt.Sprintf(" {y}%%s{!}")
+		}
+	}
+
+	if mComm > 0 {
+		r.hasComments = true
+		r.format += fmt.Sprintf(" {s-}// %%s{!}")
+	}
+
+	return r
+}
+
+// PrintField prints field info
+func (r *Renderer) PrintField(f *report.Field) {
+	var fTag, fComment, fType string
+
+	if f.Tag != "" {
+		fTag = "`" + f.Tag + "`"
+	}
+
+	if r.hasComments && f.Comment == "" {
+		fComment = "-"
+	} else {
+		fComment = f.Comment
+	}
+
+	fType = strutil.Ellipsis(f.Type, MAX_TYPE_SIZE)
+
+	switch {
+	case r.hasTags && r.hasComments:
+		fmtc.Printf(r.format, f.Name, fType, fTag, fComment)
+	case r.hasTags && !r.hasComments:
+		fmtc.Printf(r.format, f.Name, fType, fTag)
+	case !r.hasTags && r.hasComments:
+		fmtc.Printf(r.format, f.Name, fType, fComment)
+	default:
+		fmtc.Printf(r.format, f.Name, fType)
+	}
+}
+
+// PrintPlaceholder prints placeholder
+func (r *Renderer) PrintPlaceholder() {
+	switch {
+	case r.hasTags && r.hasComments:
+		fmtc.Printf(r.format, "", "", "", "")
+	case r.hasTags || r.hasComments:
+		fmtc.Printf(r.format, "", "", "")
+	default:
+		fmtc.Printf(r.format, "", "")
+	}
+
+	fmt.Printf("  ")
+}
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+// isEmptyReport returns true if report is empty
+func isEmptyReport(r *report.Report) bool {
+	if r.IsEmpty() {
+		printWarn("Given package doesn't have any structs")
+		return true
+	}
+
+	return false
+}
+
 // printPackageSeparator prints separator with package name
 func printPackageSeparator(path string) {
 	if strings.HasPrefix(path, ".") {
@@ -121,74 +217,74 @@ func printPackageSeparator(path string) {
 }
 
 // printPackageInfo prints package info
-func printPackageInfo(pkg *report.Package) {
+func printPackageInfo(pkg *report.Package, onlyProblems bool) {
 	printPackageSeparator(pkg.Path)
 
 	for _, str := range pkg.Structs {
-		printStructInfo(str, pkg.Path, true, false)
-	}
-}
-
-// printPackageProblems prints problems in package
-func printPackageProblems(pkg *report.Package, detailed bool) {
-	printPackageSeparator(pkg.Path)
-
-	for _, str := range pkg.Structs {
-		if !isStructHasProblems(str) {
+		if onlyProblems && isAlignedStruct(str) {
 			continue
 		}
 
-		printStructInfo(str, pkg.Path, detailed, true)
+		printStructInfo(str, onlyProblems == true)
 	}
 }
 
-// printStructInfo prints struct info
-func printStructInfo(str *report.Struct, pkgPath string, detailed, optimal bool) {
-	switch optimal {
-	case false:
-		fmtc.Printf(
-			"{s-}// %s:%d | Size: %d (Optimal: %d){!}\n",
-			str.Position.File, str.Position.Line, str.Size, str.OptimalSize,
-		)
-	default:
+// printStructSizeInfo prints info about struct size
+func printStructSizeInfo(str *report.Struct, optimal bool) {
+	if optimal {
 		fmtc.Printf(
 			"Struct {*}%s{!} {s-}(%s:%d){!} fields order can be optimized (%d → %d)\n\n",
 			str.Name, str.Position.File, str.Position.Line, str.Size, str.OptimalSize,
 		)
+	} else {
+		if str.Size != str.OptimalSize {
+			fmtc.Printf(
+				"{s-}// %s:%d | Size: %d (Optimal: %d){!}\n",
+				str.Position.File, str.Position.Line, str.Size, str.OptimalSize,
+			)
+		} else {
+			fmtc.Printf(
+				"{s-}// %s:%d | Size: %d{!}\n",
+				str.Position.File, str.Position.Line, str.Size,
+			)
+		}
 	}
+}
+
+// printStructInfo prints struct info
+func printStructInfo(str *report.Struct, optimal bool) {
+	printStructSizeInfo(str, optimal)
 
 	fmtc.Printf("type {*}%s{!} struct {s}{{!}\n", str.Name)
 
-	var fields []*report.Field
-
 	if optimal {
-		fields = str.OptimalFields
+		printAlignedFieldsInfo(str.AlignedFields)
 	} else {
-		fields = str.Fields
+		printCurrentFieldsInfo(str.Fields)
 	}
 
-	if detailed {
-		printDetailedFieldsInfo(fields, pkgPath)
-	} else {
-		printSimpleFieldsInfo(fields, pkgPath)
-	}
-
-	fmtc.Printf("{s}}{!}\n\n")
+	fmtc.Println("{s}}{!}\n")
 }
 
-// printDetailedFieldsInfo prints verbose fields info
-func printDetailedFieldsInfo(fields []*report.Field, pkgPath string) {
-	f := getFieldFormat(fields, pkgPath, false)
+func printAlignedFieldsInfo(fields []*report.Field) {
+	r := NewRenderer(fields, true)
+
+	for _, field := range fields {
+		r.PrintField(field)
+		fmtc.NewLine()
+	}
+}
+
+func printCurrentFieldsInfo(fields []*report.Field) {
+	r := NewRenderer(fields, false)
 
 	counter := int64(0)
 	maxAlign := inspect.GetMaxAlign()
 
 	for index, field := range fields {
-		fType := getPrettyFieldType(field.Type, pkgPath)
+		r.PrintField(field)
 
-		printFieldInfo(f, field.Name, fType, field.Tag, field.Comment)
-
-		fmtc.Printf(strings.Repeat("  ", int(counter+1)))
+		fmt.Printf(strings.Repeat("  ", int(counter+1)))
 
 		for i := int64(0); i < field.Size; i++ {
 			fmtc.Printf("{g}■ {!}")
@@ -197,7 +293,8 @@ func printDetailedFieldsInfo(fields []*report.Field, pkgPath string) {
 
 			if counter == maxAlign {
 				if i+1 != field.Size {
-					printFieldInfo("\n"+f+"  ", "", "", "", "")
+					fmtc.NewLine()
+					r.PrintPlaceholder()
 				}
 				counter = 0
 			}
@@ -212,101 +309,6 @@ func printDetailedFieldsInfo(fields []*report.Field, pkgPath string) {
 
 		fmtc.NewLine()
 	}
-}
-
-// printSimpleFieldsInfo prints verbose fields info
-func printSimpleFieldsInfo(fields []*report.Field, pkgPath string) {
-	f := getFieldFormat(fields, pkgPath, true) + "\n"
-
-	for _, field := range fields {
-		fType := getPrettyFieldType(field.Type, pkgPath)
-		printFieldInfo(f, field.Name, fType, field.Tag, field.Comment)
-	}
-}
-
-// getFieldFormat generate format string for field output
-func getFieldFormat(fields []*report.Field, pkgPath string, short bool) string {
-	var result string
-	var lName, lType, lTag, lComm int
-
-	for _, field := range fields {
-		fType := getPrettyFieldType(field.Type, pkgPath)
-		lName = mathutil.Max(lName, len(field.Name))
-		lType = mathutil.Max(lType, len(strutil.Ellipsis(fType, MAX_TYPE_SIZE)))
-		lTag = mathutil.Max(lTag, len(field.Tag))
-		lComm = mathutil.Max(lComm, len(field.Comment))
-	}
-
-	if lTag > 0 {
-		lTag += 2
-	}
-
-	result += fmt.Sprintf("  %%-%ds", lName)
-
-	if lTag > 0 || lComm > 0 {
-		result += fmt.Sprintf(" {*}%%-%ds{!}", lType)
-	} else {
-		result += fmt.Sprintf(" {*}%%s{!}")
-	}
-
-	if lTag > 0 {
-		if lComm > 0 {
-			result += fmt.Sprintf(" {y}%%-%ds{!}", lTag)
-		} else {
-			result += fmt.Sprintf(" {y}%%s{!}")
-		}
-	}
-
-	if lComm > 0 {
-		result += fmt.Sprintf(" {s-}// %%s{!}")
-	}
-
-	return result
-}
-
-// printFieldInfo prints field info
-func printFieldInfo(format, name, typ, tag, comm string) {
-	var fTag string
-
-	if tag != "" {
-		fTag = "`" + tag + "`"
-	}
-
-	switch {
-	case tag != "" && comm != "":
-		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE), fTag, comm)
-	case tag != "" && comm == "":
-		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE), fTag)
-	case tag == "" && comm != "":
-		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE), comm)
-	default:
-		fmtc.Printf(format, name, strutil.Ellipsis(typ, MAX_TYPE_SIZE))
-	}
-}
-
-// getPrettyFieldType formats type name
-func getPrettyFieldType(typ string, pkgPath string) string {
-	if !strings.Contains(typ, "/") {
-		return typ
-	}
-
-	if strings.Contains(typ, pkgPath+".") {
-		return strutil.Exclude(typ, pkgPath+".")
-	}
-
-	for i := 0; i < 128; i++ {
-		k := strutil.ReadField(typ, i, true, "[", "]", "*")
-
-		if k == "" {
-			break
-		}
-
-		if strings.Contains(k, "/") {
-			typ = strings.Replace(typ, k, path.Base(k), -1)
-		}
-	}
-
-	return typ
 }
 
 // findStruct finds struct with given name
@@ -326,7 +328,7 @@ func findStruct(r *report.Report, name string) (*report.Package, *report.Struct)
 // unaligned fields
 func isPackageHasProblems(pkg *report.Package) bool {
 	for _, str := range pkg.Structs {
-		if isStructHasProblems(str) {
+		if !isAlignedStruct(str) {
 			return true
 		}
 	}
@@ -334,7 +336,7 @@ func isPackageHasProblems(pkg *report.Package) bool {
 	return false
 }
 
-// isStructHasProblems returns true if struct has unaligned fields
-func isStructHasProblems(str *report.Struct) bool {
-	return str.Size != str.OptimalSize
+// isAlignedStruct returns false if struct has unaligned fields
+func isAlignedStruct(str *report.Struct) bool {
+	return str.Size == str.OptimalSize || str.Ignore
 }
