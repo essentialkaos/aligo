@@ -141,6 +141,10 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 				}
 
 			case *ast.StructType:
+				if strName == "" {
+					return true // ignore unnamed structs defined in methods
+				}
+
 				info := &structInfo{
 					Name:     strName,
 					Type:     pkg.Types[nt].Type.(*types.Struct),
@@ -151,6 +155,8 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 				}
 
 				result.Structs = append(result.Structs, getStructInfo(info))
+
+				strName = ""
 			}
 
 			return true
