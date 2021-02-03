@@ -2,7 +2,7 @@ package inspect
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2020 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2021 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -141,6 +141,10 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 				}
 
 			case *ast.StructType:
+				if strName == "" {
+					return true // ignore unnamed structs defined in methods
+				}
+
 				info := &structInfo{
 					Name:     strName,
 					Type:     pkg.Types[nt].Type.(*types.Struct),
@@ -151,6 +155,8 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 				}
 
 				result.Structs = append(result.Structs, getStructInfo(info))
+
+				strName = ""
 			}
 
 			return true
@@ -165,6 +171,7 @@ func getStructInfo(info *structInfo) *report.Struct {
 	result := &report.Struct{
 		Name:     info.Name,
 		Position: convertPosition(info.Pos),
+		Ignore:   info.Skip,
 	}
 
 	numFields := info.Type.NumFields()
@@ -262,7 +269,7 @@ func checkIgnoreFlag(cm ast.CommentMap) bool {
 
 	for _, cg := range cm.Comments() {
 		for _, c := range cg.List {
-			if strings.Contains(c.Text, IGNORE_FLAG) {
+			if strings.Contains(strings.ToLower(c.Text), IGNORE_FLAG) {
 				return true
 			}
 		}

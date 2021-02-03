@@ -2,9 +2,15 @@ package report
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2020 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2021 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+import (
+	"fmt"
+)
+
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // Report contains aligning info about packages
@@ -68,4 +74,15 @@ func (p *Package) IsEmpty() bool {
 	}
 
 	return len(p.Structs) == 0
+}
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+// String returns string representation of struct
+func (s *Struct) String() string {
+	return fmt.Sprintf(
+		"%s:{Pos: %s:%d | Size: %d | Optimal: %d | Fields: %d | Ignore: %t}",
+		s.Name, s.Position.File, s.Position.Line, s.Size, s.OptimalSize,
+		len(s.Fields), s.Ignore,
+	)
 }
