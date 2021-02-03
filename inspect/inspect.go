@@ -165,6 +165,7 @@ func getStructInfo(info *structInfo) *report.Struct {
 	result := &report.Struct{
 		Name:     info.Name,
 		Position: convertPosition(info.Pos),
+		Ignore:   info.Skip,
 	}
 
 	numFields := info.Type.NumFields()
@@ -262,7 +263,7 @@ func checkIgnoreFlag(cm ast.CommentMap) bool {
 
 	for _, cg := range cm.Comments() {
 		for _, c := range cg.List {
-			if strings.Contains(c.Text, IGNORE_FLAG) {
+			if strings.Contains(strings.ToLower(c.Text), IGNORE_FLAG) {
 				return true
 			}
 		}

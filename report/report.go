@@ -7,6 +7,12 @@ package report
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+import (
+	"fmt"
+)
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
 // Report contains aligning info about packages
 type Report struct {
 	Packages []*Package `json:"packages"`
@@ -68,4 +74,15 @@ func (p *Package) IsEmpty() bool {
 	}
 
 	return len(p.Structs) == 0
+}
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+// String returns string representation of struct
+func (s *Struct) String() string {
+	return fmt.Sprintf(
+		"%s:{Pos: %s:%d | Size: %d | Optimal: %d | Fields: %d | Ignore: %t}",
+		s.Name, s.Position.File, s.Position.Line, s.Size, s.OptimalSize,
+		len(s.Fields), s.Ignore,
+	)
 }
