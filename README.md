@@ -125,8 +125,8 @@ Examples
 
 | Branch | Status |
 |--------|--------|
-| `master` | ![CI](https://kaos.sh/w/aligo/ci.svg?branch=master) |
-| `develop` | ![CI](https://kaos.sh/w/aligo/ci.svg?branch=develop) |
+| `master` | [![CI](https://kaos.sh/w/aligo/ci.svg?branch=master)](https://kaos.sh/w/aligo/ci?branch=master) |
+| `develop` | [![CI](https://kaos.sh/w/aligo/ci.svg?branch=develop)](https://kaos.sh/w/aligo/ci?branch=develop) |
 
 ### Contributing
 
