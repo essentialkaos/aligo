@@ -1,10 +1,9 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/aligo.svg"/></a></p>
 
 <p align="center">
-  <a href="https://github.com/essentialkaos/aligo/actions"><img src="https://github.com/essentialkaos/aligo/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
-  <a href="https://codebeat.co/projects/github-com-essentialkaos-aligo-master"><img alt="codebeat badge" src="https://codebeat.co/badges/18a359f5-50dd-4bfc-95b2-07dee23d018a" /></a>
-  <a href="https://goreportcard.com/report/github.com/essentialkaos/aligo"><img src="https://goreportcard.com/badge/github.com/essentialkaos/aligo" alt="GoReportCard" /></a>
-  <a href="https://github.com/essentialkaos/aligo/actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos/aligo/workflows/CodeQL/badge.svg" /></a>
+  <a href="https://kaos.sh/w/aligo/CI"><img src="https://kaos.sh/w/aligo/CI.svg" alt="GitHub Actions CI Status" /></a>
+  <a href="https://kaos.sh/r/aligo"><img src="https://kaos.sh/r/aligo.svg" alt="GoReportCard" /></a>
+  <a href="https://kaos.sh/w/aligo/CodeQL"><img src="https://kaos.sh/w/aligo/CodeQL.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
