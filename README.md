@@ -117,8 +117,6 @@ Examples
 
   aligo -s PostMessageParameters view .
   Show info about PostMessageParameters struct
-
-
 ```
 
 ### Build Status
