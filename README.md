@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://kaos.sh/w/aligo/CI"><img src="https://kaos.sh/w/aligo/CI.svg" alt="GitHub Actions CI Status" /></a>
-  <a href="https://goreportcard.com/report/github.com/essentialkaos/aligo"><img src="https://goreportcard.com/badge/github.com/essentialkaos/aligo" alt="GoReportCard" /></a>
+  <a href="https://kaos.sh/r/aligo"><img src="https://kaos.sh/r/aligo.svg" alt="GoReportCard" /></a>
   <a href="https://kaos.sh/w/aligo/CodeQL"><img src="https://kaos.sh/w/aligo/CodeQL.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
