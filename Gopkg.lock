@@ -14,19 +14,28 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f1a93c3cbd695f84e5db8c5502eec37cf75a82be9aba277b856134578ea599c8"
+  digest = "1:af7b8aca45b9fb0ab85a1dcc16372621e2d019a57f688753d3b16f48fc87a529"
+  name = "golang.org/x/sys"
+  packages = ["execabs"]
+  pruneopts = "UT"
+  revision = "41cdb8703e55fbed9665f08d8cd477d875405277"
+
+[[projects]]
+  branch = "master"
+  digest = "1:beda94b552f07eeffde0d25308e808a41a0113f8fc4e6dc5853d7fe724ba59ee"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
     "go/buildutil",
     "go/internal/cgo",
     "go/loader",
+    "internal/typeparams",
   ]
   pruneopts = "UT"
-  revision = "d78b04bdf963623721afc1b2631458123ebaddb0"
+  revision = "bf6c7f26e9f0fea5b256f9ef6968435dddc5be25"
 
 [[projects]]
-  digest = "1:3e7ac2c800be24c2b9f74d53f0f0d94d4fde173a3410a8112fa61d6bc6549ad2"
+  digest = "1:66064fb00ae48318e8c5499fa77f33ccfb1b043a2fd4adb152a8d8b6c1dde81a"
   name = "pkg.re/essentialkaos/ek.v12"
   packages = [
     "env",
@@ -48,8 +57,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "b4a6c819b12fb195b4b458d1a713c7eb8536f287"
-  version = "v12.12.0"
+  revision = "2d88cf765f1c527eb1cb85d63b0ef9f47f95851f"
+  version = "v12.24.0"
 
 [solve-meta]
   analyzer-name = "dep"

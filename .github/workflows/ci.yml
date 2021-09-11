@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        go: [ '1.14.x', '1.15.x' ]
+        go: [ '1.16.x', '1.17.x' ]
 
     steps:
       - name: Set up Go
@@ -87,16 +87,8 @@ jobs:
         working-directory: ${{env.SRC_DIR}}
         run: make deps
 
-      - name: Install Aligo
-        working-directory: ${{env.SRC_DIR}}
-        run: |
-          wget https://apps.kaos.st/aligo/latest/linux/x86_64/aligo
-          chmod +x aligo
-
-      - name: Print Aligo version info
-        working-directory: ${{env.SRC_DIR}}
-        run: ./aligo --version
-
-      - name: Check Go structs alignment info
-        working-directory: ${{env.SRC_DIR}}
-        run: ./aligo check ./...
+      - name: Check Golang sources with Aligo
+        uses: essentialkaos/aligo-action@v1
+        with:
+          path: ${{env.SRC_DIR}}
+          files: ./...
