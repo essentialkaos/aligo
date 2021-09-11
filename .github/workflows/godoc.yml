@@ -1,0 +1,13 @@
+name: GoDoc
+
+on:
+  create
+
+jobs:
+  GoDoc:
+    name: Generate docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger GoSumDB and PkgGoDev
+        uses: essentialkaos/pkgre-godoc-action@v1
