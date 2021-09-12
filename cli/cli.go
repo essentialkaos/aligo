@@ -33,7 +33,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.5.1"
+	VER  = "1.5.2"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 
@@ -143,7 +143,7 @@ func process(args []string) {
 	}
 
 	if report == nil && err == nil {
-		return
+		os.Exit(1)
 	}
 
 	switch cmd {
