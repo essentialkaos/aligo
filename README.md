@@ -39,7 +39,7 @@ go get -u github.com/essentialkaos/aligo
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/aligo/latest):
+You can download prebuilt binaries for Linux and macOS from [EK Apps Repository](https://apps.kaos.st/aligo/latest):
 
 ```bash
 bash <(curl -fsSL https://apps.kaos.st/get) aligo
@@ -135,7 +135,7 @@ Before contributing to this project please read our [Contributing Guidelines](ht
 We would like to thank:
 
 - [@mdempsky](https://github.com/mdempsky) for [maligned](https://github.com/mdempsky/maligned) utility;
-- [@tyranron](https://github.com/tyranron) for [golang-sizeof.tips](http://golang-sizeof.tips/) website.
+- [@tyranron](https://github.com/tyranron) for `golang-sizeof.tips` website.
 
 ### License
 
