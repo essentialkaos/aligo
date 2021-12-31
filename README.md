@@ -135,7 +135,7 @@ Before contributing to this project please read our [Contributing Guidelines](ht
 We would like to thank:
 
 - [@mdempsky](https://github.com/mdempsky) for [maligned](https://github.com/mdempsky/maligned) utility;
-- [@tyranron](https://github.com/tyranron) for [golang-sizeof.tips](http://golang-sizeof.tips/) website.
+- [@tyranron](https://github.com/tyranron) for `golang-sizeof.tips` website.
 
 ### License
 
