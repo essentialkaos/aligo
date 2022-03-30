@@ -1,0 +1,30 @@
+version: 2
+
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+      timezone: "Europe/London"
+      time: "03:00"
+    labels:
+      - "PR • MAINTENANCE"
+    assignees:
+      - "andyone"
+    reviewers:
+      - "andyone"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+      timezone: "Europe/London"
+      time: "04:00"
+    labels:
+      - "PR • MAINTENANCE"
+    assignees:
+      - "andyone"
+    reviewers:
+      - "andyone"
