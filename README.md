@@ -25,16 +25,10 @@
 
 #### From source
 
-To build the `aligo` from scratch, make sure you have a working Go 1.16+ workspace (_[instructions](https://golang.org/doc/install)_), then:
+To build the `aligo` from scratch, make sure you have a working Go 1.17+ workspace (_[instructions](https://golang.org/doc/install)_), then:
 
 ```
-go get github.com/essentialkaos/aligo
-```
-
-If you want to update `aligo` to latest stable release, do:
-
-```
-go get -u github.com/essentialkaos/aligo
+go install github.com/essentialkaos/aligo
 ```
 
 #### Prebuilt binaries
