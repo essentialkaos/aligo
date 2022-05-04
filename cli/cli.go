@@ -33,7 +33,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.5.3"
+	VER  = "1.5.4"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 
@@ -132,9 +132,9 @@ func prepare() {
 }
 
 // process starts processing
-func process(args []string) {
-	cmd := args[0]
-	dirs := args[1:]
+func process(args options.Arguments) {
+	cmd := args.Get(0).ToLower().String()
+	dirs := args.Strings()[1:]
 
 	report, err := inspect.ProcessSources(dirs)
 
