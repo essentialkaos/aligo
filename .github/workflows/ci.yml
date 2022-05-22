@@ -8,14 +8,13 @@ on:
   schedule:
     - cron: '0 18 * * 0'
 
+env:
+  SRC_DIR: src/github.com/${{ github.repository }}
+
 jobs:
   Go:
     name: Go
     runs-on: ubuntu-latest
-
-    env:
-      SRC_DIR: src/github.com/${{ github.repository }}
-      GO111MODULE: auto
 
     strategy:
       matrix:
@@ -26,23 +25,11 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
-        id: go
-
-      - name: Setup PATH
-        run: |
-          echo "GOPATH=${{ github.workspace }}" >> "$GITHUB_ENV"
-          echo "GOBIN=${{ github.workspace }}/bin" >> "$GITHUB_ENV"
-          echo "${{ github.workspace }}/bin" >> "$GITHUB_PATH"
 
       - name: Checkout
         uses: actions/checkout@v3
         with:
           path: ${{env.SRC_DIR}}
-
-      - name: Install deps
-        run: |
-          mkdir -p $GOBIN
-          curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
       - name: Download dependencies
         working-directory: ${{env.SRC_DIR}}
@@ -58,32 +45,16 @@ jobs:
 
     needs: Go
 
-    env:
-      SRC_DIR: src/github.com/${{ github.repository }}
-      GO111MODULE: auto
-
     steps:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
           go-version: '1.17.x'
-        id: go
-
-      - name: Setup PATH
-        run: |
-          echo "GOPATH=${{ github.workspace }}" >> "$GITHUB_ENV"
-          echo "GOBIN=${{ github.workspace }}/bin" >> "$GITHUB_ENV"
-          echo "${{ github.workspace }}/bin" >> "$GITHUB_PATH"
 
       - name: Checkout
         uses: actions/checkout@v3
         with:
           path: ${{env.SRC_DIR}}
-
-      - name: Install deps
-        run: |
-          mkdir -p $GOBIN
-          curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
       - name: Download dependencies
         working-directory: ${{env.SRC_DIR}}
