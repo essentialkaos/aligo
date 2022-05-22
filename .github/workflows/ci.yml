@@ -8,13 +8,13 @@ on:
   schedule:
     - cron: '0 18 * * 0'
 
+env:
+  SRC_DIR: src/github.com/${{ github.repository }}
+
 jobs:
   Go:
     name: Go
     runs-on: ubuntu-latest
-
-    env:
-      SRC_DIR: src/github.com/${{ github.repository }}
 
     strategy:
       matrix:
@@ -25,7 +25,6 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
-        id: go
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -46,16 +45,11 @@ jobs:
 
     needs: Go
 
-    env:
-      SRC_DIR: src/github.com/${{ github.repository }}
-      GO111MODULE: auto
-
     steps:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
           go-version: '1.17.x'
-        id: go
 
       - name: Checkout
         uses: actions/checkout@v3
