@@ -121,7 +121,7 @@ func prepare() {
 	arch := build.Default.GOARCH
 
 	if options.Has(OPT_ARCH) {
-		arch = options.GetS(arch)
+		arch = options.GetS(OPT_ARCH)
 	}
 
 	inspect.Sizes = types.SizesFor("gc", arch)
@@ -137,7 +137,6 @@ func process(args options.Arguments) {
 	dirs := args.Strings()[1:]
 
 	report, err := inspect.ProcessSources(dirs)
-
 	if err != nil {
 		printErrorAndExit(err.Error())
 	}
