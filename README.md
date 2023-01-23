@@ -31,14 +31,6 @@ To build the `aligo` from scratch, make sure you have a working Go 1.17+ workspa
 go install github.com/essentialkaos/aligo
 ```
 
-#### Prebuilt binaries
-
-You can download prebuilt binaries for Linux and macOS from [EK Apps Repository](https://apps.kaos.st/aligo/latest):
-
-```bash
-bash <(curl -fsSL https://apps.kaos.st/get) aligo
-```
-
 ### Command-line completion
 
 You can generate completion for `bash`, `zsh` or `fish` shell.
