@@ -13,6 +13,7 @@ import (
 	"go/types"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fmtutil"
@@ -33,7 +34,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.5.5"
+	VER  = "1.6.0"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 
@@ -41,6 +42,7 @@ const (
 const (
 	OPT_ARCH     = "a:arch"
 	OPT_STRUCT   = "s:struct"
+	OPT_TAGS     = "t:tags"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -55,6 +57,7 @@ const (
 var optMap = options.Map{
 	OPT_ARCH:     {},
 	OPT_STRUCT:   {},
+	OPT_TAGS:     {Mergeble: true},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
 	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
@@ -135,8 +138,10 @@ func prepare() {
 func process(args options.Arguments) {
 	cmd := args.Get(0).ToLower().String()
 	dirs := args.Strings()[1:]
+	tags := strings.Split(options.GetS(OPT_TAGS), ",")
 
-	report, err := inspect.ProcessSources(dirs)
+	report, err := inspect.ProcessSources(dirs, tags)
+
 	if err != nil {
 		printErrorAndExit(err.Error())
 	}
@@ -232,6 +237,7 @@ func genUsage() *usage.Info {
 
 	info.AddOption(OPT_ARCH, "Architecture name", "name")
 	info.AddOption(OPT_STRUCT, "Print info only about struct with given name", "name")
+	info.AddOption(OPT_TAGS, "Build tags {s-}(mergeble){!}", "tag…")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")
@@ -241,7 +247,15 @@ func genUsage() *usage.Info {
 	)
 
 	info.AddExample(
-		"check .", "Check current package for alignment problems",
+		"check .", "Check current package",
+	)
+
+	info.AddExample(
+		"check ./...", "Check current package and all sub-packages",
+	)
+
+	info.AddExample(
+		"--tags tag1,tag2,tag3 check ./...", "Check current package and all sub-packages with custom build tags",
 	)
 
 	info.AddExample(
