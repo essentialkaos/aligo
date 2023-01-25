@@ -27,6 +27,7 @@ import (
 	"github.com/essentialkaos/ek/v12/usage/update"
 
 	"github.com/essentialkaos/aligo/inspect"
+	"github.com/essentialkaos/aligo/support"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -47,6 +48,7 @@ const (
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
 
+	OPT_VERB_VER     = "vv:verbose-version"
 	OPT_COMPLETION   = "completion"
 	OPT_GENERATE_MAN = "generate-man"
 )
@@ -62,6 +64,7 @@ var optMap = options.Map{
 	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
 	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
 
+	OPT_VERB_VER:     {Type: options.BOOL},
 	OPT_COMPLETION:   {},
 	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
@@ -69,7 +72,7 @@ var optMap = options.Map{
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // Init is main CLI func
-func Init() {
+func Init(gitRev string, gomod []byte) {
 	runtime.GOMAXPROCS(2)
 
 	args, errs := options.Parse(optMap)
@@ -84,23 +87,20 @@ func Init() {
 		os.Exit(1)
 	}
 
-	if options.Has(OPT_COMPLETION) {
-		os.Exit(genCompletion())
-	}
-
-	if options.Has(OPT_GENERATE_MAN) {
-		genMan()
-		os.Exit(0)
-	}
-
 	configureUI()
 
-	if options.GetB(OPT_VER) {
-		showAbout()
+	switch {
+	case options.Has(OPT_COMPLETION):
+		os.Exit(genCompletion())
+	case options.Has(OPT_GENERATE_MAN):
+		os.Exit(genMan())
+	case options.GetB(OPT_VER):
+		showAbout(gitRev)
 		return
-	}
-
-	if options.GetB(OPT_HELP) || len(args) < 2 {
+	case options.GetB(OPT_VERB_VER):
+		support.ShowSupportInfo(APP, VER, gitRev, gomod)
+		return
+	case options.GetB(OPT_HELP) || len(args) < 2:
 		showUsage()
 		return
 	}
@@ -119,7 +119,7 @@ func configureUI() {
 	fmtutil.SeparatorTitleColorTag = "{*}"
 }
 
-// prepare configure inspector
+// prepare configures inspector
 func prepare() {
 	arch := build.Default.GOARCH
 
@@ -196,8 +196,8 @@ func showUsage() {
 }
 
 // showAbout prints info about version
-func showAbout() {
-	genAbout().Render()
+func showAbout(gitRev string) {
+	genAbout(gitRev).Render()
 }
 
 // genCompletion generates completion for different shells
@@ -219,13 +219,15 @@ func genCompletion() int {
 }
 
 // genMan generates man page
-func genMan() {
+func genMan() int {
 	fmt.Println(
 		man.Generate(
 			genUsage(),
-			genAbout(),
+			genAbout(""),
 		),
 	)
+
+	return 0
 }
 
 // genUsage generates usage info
@@ -267,7 +269,7 @@ func genUsage() *usage.Info {
 }
 
 // genAbout generates info about version
-func genAbout() *usage.About {
+func genAbout(gitRev string) *usage.About {
 	about := &usage.About{
 		App:           APP,
 		Version:       VER,
@@ -276,6 +278,10 @@ func genAbout() *usage.About {
 		Owner:         "ESSENTIAL KAOS",
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/aligo", update.GitHubChecker},
+	}
+
+	if gitRev != "" {
+		about.Build = "git:" + gitRev
 	}
 
 	return about
