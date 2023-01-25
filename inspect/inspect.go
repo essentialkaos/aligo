@@ -10,6 +10,7 @@ package inspect
 import (
 	"fmt"
 	"go/ast"
+	"go/build"
 	"go/parser"
 	"go/token"
 	"go/types"
@@ -51,7 +52,7 @@ var fileSet *token.FileSet
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // ProcessSources starts sources processing
-func ProcessSources(dirs []string) (*report.Report, error) {
+func ProcessSources(dirs, tags []string) (*report.Report, error) {
 	importPaths := gotool.ImportPaths(dirs)
 
 	if len(importPaths) == 0 {
@@ -62,6 +63,11 @@ func ProcessSources(dirs []string) (*report.Report, error) {
 
 	loaderConfig := &loader.Config{ParserMode: parser.ParseComments}
 	loaderConfig.Fset = fileSet
+	loaderConfig.Build = &build.Default
+
+	if len(tags) > 0 {
+		loaderConfig.Build.BuildTags = tags
+	}
 
 	for _, importPath := range importPaths {
 		loaderConfig.Import(importPath)
@@ -70,7 +76,7 @@ func ProcessSources(dirs []string) (*report.Report, error) {
 	prog, err := loaderConfig.Load()
 
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	return processProgram(prog)

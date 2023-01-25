@@ -31,14 +31,6 @@ To build the `aligo` from scratch, make sure you have a working Go 1.17+ workspa
 go install github.com/essentialkaos/aligo
 ```
 
-#### Prebuilt binaries
-
-You can download prebuilt binaries for Linux and macOS from [EK Apps Repository](https://apps.kaos.st/aligo/latest):
-
-```bash
-bash <(curl -fsSL https://apps.kaos.st/get) aligo
-```
-
 ### Command-line completion
 
 You can generate completion for `bash`, `zsh` or `fish` shell.
@@ -97,6 +89,7 @@ Options
 
   --arch, -a name      Architecture name
   --struct, -s name    Print info only about struct with given name
+  --tags, -t tag…      Build tags (mergeble)
   --no-color, -nc      Disable colors in output
   --help, -h           Show this help message
   --version, -v        Show version
@@ -107,7 +100,13 @@ Examples
   Show info about all structs in current package
 
   aligo check .
-  Check current package for alignment problems
+  Check current package
+
+  aligo check ./...
+  Check current package and all sub-packages
+
+  aligo --tags tag1,tag2,tag3 check ./...
+  Check current package and all sub-packages with custom build tags
 
   aligo -s PostMessageParameters view .
   Show info about PostMessageParameters struct

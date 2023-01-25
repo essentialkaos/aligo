@@ -1,4 +1,4 @@
-package main
+package support
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
@@ -8,21 +8,34 @@ package main
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 import (
-	_ "embed"
-
-	CLI "github.com/essentialkaos/aligo/cli"
+	"github.com/essentialkaos/ek/v12/fmtutil"
+	"github.com/essentialkaos/ek/v12/system"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-//go:embed go.mod
-var gomod []byte
+// showOSInfo shows verbose information about system
+func showOSInfo() {
+	systemInfo, err := system.GetSystemInfo()
 
-// gitrev is short hash of the latest git commit
-var gitrev string
+	if err != nil {
+		return
+	}
 
-// ////////////////////////////////////////////////////////////////////////////////// //
+	fmtutil.Separator(false, "SYSTEM INFO")
 
-func main() {
-	CLI.Init(gitrev, gomod)
+	printInfo(7, "Name", systemInfo.OS)
+	printInfo(7, "Version", systemInfo.Version)
+	printInfo(7, "Arch", systemInfo.Arch)
+	printInfo(7, "Kernel", systemInfo.Kernel)
+}
+
+// collectEnvInfo collects info about environment
+func collectEnvInfo() Pkgs {
+	return nil
+}
+
+// showEnvInfo shows info about environment
+func showEnvInfo(pkgs Pkgs) {
+	return
 }

@@ -4,11 +4,7 @@ _Before opening an issue, search for similar bug reports or feature requests on 
 
 **System info:**
 
-* **Version (from `aligo --version`):** 
-* **OS (e.g. from `/etc/*-release`):** 
-* **Kernel (`uname -a`):** 
-* **Go version (`go version`):** 
-* **Bash version (`bash version`):** 
+* **Verbose version info (from `aligo -vv`):** 
 * **Install tools:** 
 
 **Steps to reproduce:**
