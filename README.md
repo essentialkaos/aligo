@@ -89,6 +89,7 @@ Options
 
   --arch, -a name      Architecture name
   --struct, -s name    Print info only about struct with given name
+  --tags, -t tag…      Build tags (mergeble)
   --no-color, -nc      Disable colors in output
   --help, -h           Show this help message
   --version, -v        Show version
@@ -99,7 +100,13 @@ Examples
   Show info about all structs in current package
 
   aligo check .
-  Check current package for alignment problems
+  Check current package
+
+  aligo check ./...
+  Check current package and all sub-packages
+
+  aligo --tags tag1,tag2,tag3 check ./...
+  Check current package and all sub-packages with custom build tags
 
   aligo -s PostMessageParameters view .
   Show info about PostMessageParameters struct
