@@ -58,7 +58,7 @@ func showApplicationInfo(app, ver, gitRev string) {
 	printInfo(7, "Name", app)
 	printInfo(7, "Version", ver)
 
-	printInfo(7, "Git SHA", fmtc.Sprintf(
+	printInfo(7, "Go", fmtc.Sprintf(
 		"%s {s}(%s/%s){!}",
 		strings.TrimLeft(runtime.Version(), "go"),
 		runtime.GOOS, runtime.GOARCH,
