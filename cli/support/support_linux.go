@@ -2,7 +2,7 @@ package support
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2023 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -10,8 +10,8 @@ package support
 import (
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fmtutil"
-	"github.com/essentialkaos/ek/v12/fsutil"
 	"github.com/essentialkaos/ek/v12/system"
+	"github.com/essentialkaos/ek/v12/system/container"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -41,7 +41,6 @@ func showOSInfo() {
 		if osInfo == nil {
 			fmtutil.Separator(false, "SYSTEM INFO")
 			printInfo(12, "Name", systemInfo.OS)
-			printInfo(12, "Version", systemInfo.Version)
 		}
 	}
 
@@ -50,11 +49,13 @@ func showOSInfo() {
 
 	containerEngine := "No"
 
-	switch {
-	case fsutil.IsExist("/.dockerenv"):
+	switch container.GetEngine() {
+	case container.DOCKER:
 		containerEngine = "Yes (Docker)"
-	case fsutil.IsExist("/run/.containerenv"):
+	case container.PODMAN:
 		containerEngine = "Yes (Podman)"
+	case container.LXC:
+		containerEngine = "Yes (LXC)"
 	}
 
 	fmtc.NewLine()

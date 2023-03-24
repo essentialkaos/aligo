@@ -2,7 +2,7 @@ package cli
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2023 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -17,6 +17,7 @@ import (
 
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fmtutil"
+	"github.com/essentialkaos/ek/v12/fsutil"
 	"github.com/essentialkaos/ek/v12/options"
 	"github.com/essentialkaos/ek/v12/strutil"
 	"github.com/essentialkaos/ek/v12/usage"
@@ -26,8 +27,8 @@ import (
 	"github.com/essentialkaos/ek/v12/usage/man"
 	"github.com/essentialkaos/ek/v12/usage/update"
 
+	"github.com/essentialkaos/aligo/cli/support"
 	"github.com/essentialkaos/aligo/inspect"
-	"github.com/essentialkaos/aligo/support"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -35,7 +36,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "1.6.0"
+	VER  = "1.6.1"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 
@@ -61,8 +62,8 @@ var optMap = options.Map{
 	OPT_STRUCT:   {},
 	OPT_TAGS:     {Mergeble: true},
 	OPT_NO_COLOR: {Type: options.BOOL},
-	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
-	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
+	OPT_HELP:     {Type: options.BOOL},
+	OPT_VER:      {Type: options.BOOL},
 
 	OPT_VERB_VER:     {Type: options.BOOL},
 	OPT_COMPLETION:   {},
@@ -71,19 +72,16 @@ var optMap = options.Map{
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// Init is main CLI func
-func Init(gitRev string, gomod []byte) {
+// Run is main CLI function
+func Run(gitRev string, gomod []byte) {
 	runtime.GOMAXPROCS(2)
+
+	preConfigureUI()
 
 	args, errs := options.Parse(optMap)
 
 	if len(errs) != 0 {
-		printError("Options parsing errors:")
-
-		for _, err := range errs {
-			printError("  %v", err)
-		}
-
+		printError(errs[0].Error())
 		os.Exit(1)
 	}
 
@@ -91,22 +89,47 @@ func Init(gitRev string, gomod []byte) {
 
 	switch {
 	case options.Has(OPT_COMPLETION):
-		os.Exit(genCompletion())
+		os.Exit(printCompletion())
 	case options.Has(OPT_GENERATE_MAN):
-		os.Exit(genMan())
+		printMan()
+		os.Exit(0)
 	case options.GetB(OPT_VER):
-		showAbout(gitRev)
-		return
+		genAbout(gitRev).Print()
+		os.Exit(0)
 	case options.GetB(OPT_VERB_VER):
-		support.ShowSupportInfo(APP, VER, gitRev, gomod)
-		return
+		support.Print(APP, VER, gitRev, gomod)
+		os.Exit(0)
 	case options.GetB(OPT_HELP) || len(args) < 2:
-		showUsage()
-		return
+		genUsage().Print()
+		os.Exit(0)
 	}
 
 	prepare()
 	process(args)
+}
+
+// preConfigureUI preconfigures UI based on information about user terminal
+func preConfigureUI() {
+	term := os.Getenv("TERM")
+
+	fmtc.DisableColors = true
+
+	if term != "" {
+		switch {
+		case strings.Contains(term, "xterm"),
+			strings.Contains(term, "color"),
+			term == "screen":
+			fmtc.DisableColors = false
+		}
+	}
+
+	if !fsutil.IsCharacterDevice("/dev/stdout") && os.Getenv("FAKETTY") == "" {
+		fmtc.DisableColors = true
+	}
+
+	if os.Getenv("NO_COLOR") != "" {
+		fmtc.DisableColors = true
+	}
 }
 
 // configureUI configures user interface
@@ -190,18 +213,8 @@ func printErrorAndExit(f string, a ...interface{}) {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// showUsage prints usage info
-func showUsage() {
-	genUsage().Render()
-}
-
-// showAbout prints info about version
-func showAbout(gitRev string) {
-	genAbout(gitRev).Render()
-}
-
-// genCompletion generates completion for different shells
-func genCompletion() int {
+// printCompletion prints completion for given shell
+func printCompletion() int {
 	info := genUsage()
 
 	switch options.GetS(OPT_COMPLETION) {
@@ -218,16 +231,14 @@ func genCompletion() int {
 	return 0
 }
 
-// genMan generates man page
-func genMan() int {
+// printMan prints man page
+func printMan() {
 	fmt.Println(
 		man.Generate(
 			genUsage(),
 			genAbout(""),
 		),
 	)
-
-	return 0
 }
 
 // genUsage generates usage info

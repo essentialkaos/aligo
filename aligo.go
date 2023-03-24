@@ -2,7 +2,7 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2023 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -24,5 +24,5 @@ var gitrev string
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 func main() {
-	CLI.Init(gitrev, gomod)
+	CLI.Run(gitrev, gomod)
 }

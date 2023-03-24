@@ -2,7 +2,7 @@ package support
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2023 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -10,6 +10,7 @@ package support
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"runtime"
 	"strings"
 
@@ -23,20 +24,9 @@ import (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// Pkg contains basic package info
-type Pkg struct {
-	Name    string
-	Version string
-}
-
-// Pkgs is slice with packages
-type Pkgs []Pkg
-
-// ////////////////////////////////////////////////////////////////////////////////// //
-
-// ShowSupportInfo prints verbose info about application, system, dependencies and
+// Print prints verbose info about application, system, dependencies and
 // important environment
-func ShowSupportInfo(app, ver, gitRev string, gomod []byte) {
+func Print(app, ver, gitRev string, gomod []byte) {
 	fmtutil.SeparatorTitleColorTag = "{s-}"
 	fmtutil.SeparatorFullscreen = false
 	fmtutil.SeparatorColorTag = "{s-}"
@@ -44,6 +34,7 @@ func ShowSupportInfo(app, ver, gitRev string, gomod []byte) {
 
 	showApplicationInfo(app, ver, gitRev)
 	showOSInfo()
+	showEnvInfo()
 	showDepsInfo(gomod)
 
 	fmtutil.Separator(false)
@@ -83,6 +74,25 @@ func showApplicationInfo(app, ver, gitRev string) {
 			printInfo(7, "Bin SHA", binSHA)
 		}
 	}
+}
+
+// showEnvInfo shows info about environment
+func showEnvInfo() {
+	fmtutil.Separator(false, "ENVIRONMENT")
+
+	cmd := exec.Command("go", "version")
+	out, err := cmd.Output()
+
+	if err != nil {
+		printInfo(2, "Go", "")
+		return
+	}
+
+	goVer := string(out)
+	goVer = strutil.ReadField(goVer, 2, false, " ")
+	goVer = strutil.Exclude(goVer, "go")
+
+	printInfo(2, "Go", goVer)
 }
 
 // showDepsInfo shows information about all dependencies
@@ -128,16 +138,3 @@ func printInfo(size int, name, value string) {
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
-
-// getMaxSize returns max package name size
-func (p Pkgs) getMaxSize() int {
-	size := 0
-
-	for _, pkg := range p {
-		if len(pkg.Name) > size {
-			size = len(pkg.Name)
-		}
-	}
-
-	return size
-}
