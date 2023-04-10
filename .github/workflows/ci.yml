@@ -67,6 +67,6 @@ jobs:
         run: make deps
 
       - name: Check Golang sources with Aligo
-        uses: essentialkaos/aligo-action@v1
+        uses: essentialkaos/aligo-action@v2
         with:
           files: ./...
