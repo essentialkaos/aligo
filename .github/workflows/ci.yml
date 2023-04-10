@@ -24,9 +24,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  SRC_DIR: src/github.com/${{ github.repository }}
-
 jobs:
   Go:
     name: Go
@@ -37,22 +34,18 @@ jobs:
         go: [ '1.18.x', '1.19.x', '1.20.x' ]
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go }}
 
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          path: ${{env.SRC_DIR}}
-
       - name: Download dependencies
-        working-directory: ${{env.SRC_DIR}}
         run: make deps
 
       - name: Run tests
-        working-directory: ${{env.SRC_DIR}}
         run: make all
 
   Aligo:
@@ -62,22 +55,18 @@ jobs:
     needs: Go
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.19.x'
 
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          path: ${{env.SRC_DIR}}
-
       - name: Download dependencies
-        working-directory: ${{env.SRC_DIR}}
         run: make deps
 
       - name: Check Golang sources with Aligo
         uses: essentialkaos/aligo-action@v1
         with:
-          path: ${{env.SRC_DIR}}
           files: ./...
