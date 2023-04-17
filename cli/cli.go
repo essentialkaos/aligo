@@ -153,7 +153,7 @@ func prepare() {
 	inspect.Sizes = types.SizesFor("gc", arch)
 
 	if inspect.Sizes == nil {
-		printErrorAndExit("Uknown arch %s", arch)
+		printErrorAndExit("Unknown arch %s", arch)
 	}
 }
 
@@ -205,7 +205,7 @@ func printWarn(f string, a ...interface{}) {
 	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
 }
 
-// printErrorAndExit print error mesage and exit with exit code 1
+// printErrorAndExit print error message and exit with exit code 1
 func printErrorAndExit(f string, a ...interface{}) {
 	printError(f, a...)
 	os.Exit(1)
