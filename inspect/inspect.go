@@ -10,8 +10,6 @@ package inspect
 import (
 	"fmt"
 	"go/ast"
-	"go/build"
-	"go/parser"
 	"go/token"
 	"go/types"
 	"path"
@@ -20,7 +18,7 @@ import (
 
 	"github.com/kisielk/gotool"
 
-	"golang.org/x/tools/go/loader"
+	"golang.org/x/tools/go/packages"
 
 	"github.com/essentialkaos/aligo/report"
 )
@@ -61,25 +59,17 @@ func ProcessSources(dirs, tags []string) (*report.Report, error) {
 
 	fileSet = token.NewFileSet()
 
-	loaderConfig := &loader.Config{ParserMode: parser.ParseComments}
-	loaderConfig.Fset = fileSet
-	loaderConfig.Build = &build.Default
-
-	if len(tags) > 0 {
-		loaderConfig.Build.BuildTags = tags
-	}
-
-	for _, importPath := range importPaths {
-		loaderConfig.Import(importPath)
-	}
-
-	prog, err := loaderConfig.Load()
+	pkgs, err := packages.Load(&packages.Config{
+		Mode:  packages.NeedTypes | packages.NeedTypesInfo | packages.NeedSyntax,
+		Fset:  fileSet,
+		Tests: false,
+	}, importPaths...)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return processProgram(prog)
+	return processPackages(pkgs)
 }
 
 // GetMaxAlign returns MaxAlign
@@ -93,12 +83,10 @@ func GetMaxAlign() int64 {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// processProgram extracs data from all packages
-func processProgram(prog *loader.Program) (*report.Report, error) {
+func processPackages(pkgs []*packages.Package) (*report.Report, error) {
 	result := &report.Report{}
-	packages := prog.InitialPackages()
 
-	for _, pkg := range packages {
+	for _, pkg := range pkgs {
 		pkgInfo, err := processPackage(pkg)
 
 		if err != nil {
@@ -108,21 +96,18 @@ func processProgram(prog *loader.Program) (*report.Report, error) {
 		result.Packages = append(result.Packages, pkgInfo)
 	}
 
-	sort.Sort(pkgSlice(result.Packages))
-
 	return result, nil
 }
 
-// processPackage extracts package data
-func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
+func processPackage(pkg *packages.Package) (*report.Package, error) {
 	var strName string
 	var strPos token.Position
 	var strIgnore bool
 
-	result := &report.Package{Path: pkg.Pkg.Path()}
-	mappings := map[string]string{pkg.Pkg.Path() + ".": ""}
+	result := &report.Package{Path: pkg.ID}
+	mappings := map[string]string{pkg.ID + ".": ""}
 
-	for _, file := range pkg.Files {
+	for _, file := range pkg.Syntax {
 		commentMap := ast.NewCommentMap(fileSet, file, file.Comments)
 
 		ast.Inspect(file, func(node ast.Node) bool {
@@ -153,14 +138,18 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 
 				info := &structInfo{
 					Name:     strName,
-					Type:     pkg.Types[nt].Type.(*types.Struct),
+					Type:     pkg.TypesInfo.Types[nt].Type.(*types.Struct),
 					AST:      nt,
 					Pos:      strPos,
 					Mappings: mappings,
 					Skip:     strIgnore,
 				}
 
-				result.Structs = append(result.Structs, getStructInfo(info))
+				structReport := getStructReport(info)
+
+				if structReport != nil {
+					result.Structs = append(result.Structs, structReport)
+				}
 
 				strName = ""
 			}
@@ -173,7 +162,7 @@ func processPackage(pkg *loader.PackageInfo) (*report.Package, error) {
 }
 
 // getStructInfo parses struct info and calculates size
-func getStructInfo(info *structInfo) *report.Struct {
+func getStructReport(info *structInfo) *report.Struct {
 	result := &report.Struct{
 		Name:     info.Name,
 		Position: convertPosition(info.Pos),
@@ -185,7 +174,7 @@ func getStructInfo(info *structInfo) *report.Struct {
 	for i := 0; i < numFields; i++ {
 		f := info.Type.Field(i)
 		fs := info.AST.Fields.List[i]
-		size := Sizes.Sizeof(f.Type())
+		size := Sizes.Sizeof(f.Type().Underlying())
 		comm := strings.Trim(fs.Comment.Text(), "\n\r")
 		typ := formatValueType(f.Type().String(), info.Mappings)
 
@@ -200,6 +189,9 @@ func getStructInfo(info *structInfo) *report.Struct {
 			},
 		)
 	}
+
+	// Recover from panic of checking size of generic types
+	defer func() { recover() }()
 
 	result.Size = Sizes.Sizeof(info.Type)
 
