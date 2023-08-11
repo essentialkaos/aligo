@@ -9,12 +9,12 @@ package cli
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fmtutil"
 	"github.com/essentialkaos/ek/v12/mathutil"
-	"github.com/essentialkaos/ek/v12/strutil"
 
 	"github.com/essentialkaos/aligo/inspect"
 	"github.com/essentialkaos/aligo/report"
@@ -47,9 +47,6 @@ func PrintFull(r *report.Report) {
 			printPackageInfo(pkg, false)
 		}
 	}
-
-	fmtutil.Separator(true)
-	fmtc.NewLine()
 }
 
 // PrintStruct prints info about struct
@@ -71,9 +68,6 @@ func PrintStruct(r *report.Report, strName string, optimal bool) {
 
 	printPackageSeparator(pkg.Path)
 	printStructInfo(str, optimal)
-
-	fmtutil.Separator(true)
-	fmtc.NewLine()
 }
 
 // Check checks report for problems
@@ -96,9 +90,6 @@ func Check(r *report.Report) bool {
 
 	if !hasProblems {
 		fmtc.Println("{g}All structs are well aligned{!}")
-	} else {
-		fmtutil.Separator(true)
-		fmtc.NewLine()
 	}
 
 	return hasProblems
@@ -114,7 +105,7 @@ func NewRenderer(fields []*report.Field, detailed bool) *Renderer {
 
 	for _, field := range fields {
 		mName = mathutil.Max(mName, len(field.Name))
-		mType = mathutil.Max(mType, len(strutil.Ellipsis(field.Type, MAX_TYPE_SIZE)))
+		mType = mathutil.Max(mType, len(filepath.Base(field.Type))+1)
 		mTag = mathutil.Max(mTag, len(field.Tag))
 		mComm = mathutil.Max(mComm, len(field.Comment))
 	}
@@ -123,7 +114,7 @@ func NewRenderer(fields []*report.Field, detailed bool) *Renderer {
 		mTag += 2
 	}
 
-	r.format = fmt.Sprintf("  %%-%ds", mName)
+	r.format = fmt.Sprintf("    %%-%ds", mName)
 
 	if mTag > 0 || mComm > 0 || !detailed {
 		r.format += fmt.Sprintf(" {*}%%-%ds{!}", mType)
@@ -167,7 +158,11 @@ func (r *Renderer) PrintField(f *report.Field) {
 		fComment = f.Comment
 	}
 
-	fType = strutil.Ellipsis(f.Type, MAX_TYPE_SIZE)
+	fType = filepath.Base(f.Type)
+
+	if strings.HasPrefix(f.Type, "*") {
+		fType = "*" + fType
+	}
 
 	switch {
 	case r.hasTags && r.hasComments:
@@ -213,7 +208,7 @@ func printPackageSeparator(path string) {
 		path = "{GOPATH}" + path[1:]
 	}
 
-	fmtutil.Separator(false, path)
+	fmtc.Printf("{s}{@*} ••• %s{!}\n\n", fmtutil.Align(path, fmtutil.LEFT, 86))
 }
 
 // printPackageInfo prints package info
@@ -239,12 +234,12 @@ func printStructSizeInfo(str *report.Struct, optimal bool) {
 	} else {
 		if str.Size != str.OptimalSize {
 			fmtc.Printf(
-				"{s-}// %s:%d | Size: %d (Optimal: %d){!}\n",
+				"  {s-}// %s:%d | Size: %d (Optimal: %d){!}\n",
 				str.Position.File, str.Position.Line, str.Size, str.OptimalSize,
 			)
 		} else {
 			fmtc.Printf(
-				"{s-}// %s:%d | Size: %d{!}\n",
+				"  {s-}// %s:%d | Size: %d{!}\n",
 				str.Position.File, str.Position.Line, str.Size,
 			)
 		}
@@ -255,7 +250,12 @@ func printStructSizeInfo(str *report.Struct, optimal bool) {
 func printStructInfo(str *report.Struct, optimal bool) {
 	printStructSizeInfo(str, optimal)
 
-	fmtc.Printf("type {*}%s{!} struct {s}{{!}\n", str.Name)
+	if str.Size == 0 {
+		fmtc.Printf("  type {*}%s{!} struct {s}{ }{!}\n\n", str.Name)
+		return
+	}
+
+	fmtc.Printf("  type {*}%s{!} struct {s}{{!}\n", str.Name)
 
 	if optimal {
 		printAlignedFieldsInfo(str.AlignedFields)
@@ -263,9 +263,10 @@ func printStructInfo(str *report.Struct, optimal bool) {
 		printCurrentFieldsInfo(str.Fields)
 	}
 
-	fmtc.Println("{s}}{!}\n")
+	fmtc.Println("  {s}}{!}\n")
 }
 
+// printAlignedFieldsInfo prints aligned field data
 func printAlignedFieldsInfo(fields []*report.Field) {
 	r := NewRenderer(fields, true)
 
@@ -275,6 +276,7 @@ func printAlignedFieldsInfo(fields []*report.Field) {
 	}
 }
 
+// printCurrentFieldsInfo prints current field data
 func printCurrentFieldsInfo(fields []*report.Field) {
 	r := NewRenderer(fields, false)
 
