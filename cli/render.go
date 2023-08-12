@@ -9,7 +9,6 @@ package cli
 
 import (
 	"fmt"
-	"path/filepath"
 	"strings"
 
 	"github.com/essentialkaos/ek/v12/fmtc"
@@ -19,11 +18,6 @@ import (
 	"github.com/essentialkaos/aligo/inspect"
 	"github.com/essentialkaos/aligo/report"
 )
-
-// ////////////////////////////////////////////////////////////////////////////////// //
-
-// MAX_TYPE_SIZE maximum type size
-const MAX_TYPE_SIZE = 32
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -103,11 +97,11 @@ func NewRenderer(fields []*report.Field, detailed bool) *Renderer {
 
 	var mName, mType, mTag, mComm int
 
-	for _, field := range fields {
-		mName = mathutil.Max(mName, len(field.Name))
-		mType = mathutil.Max(mType, len(filepath.Base(field.Type))+1)
-		mTag = mathutil.Max(mTag, len(field.Tag))
-		mComm = mathutil.Max(mComm, len(field.Comment))
+	for _, f := range fields {
+		mName = mathutil.Max(mName, len(f.Name))
+		mType = mathutil.Max(mType, len(f.Type))
+		mTag = mathutil.Max(mTag, len(f.Tag))
+		mComm = mathutil.Max(mComm, len(f.Comment))
 	}
 
 	if mTag > 0 {
@@ -146,7 +140,7 @@ func NewRenderer(fields []*report.Field, detailed bool) *Renderer {
 
 // PrintField prints field info
 func (r *Renderer) PrintField(f *report.Field) {
-	var fTag, fComment, fType string
+	var fTag, fComment string
 
 	if f.Tag != "" {
 		fTag = "`" + f.Tag + "`"
@@ -158,21 +152,15 @@ func (r *Renderer) PrintField(f *report.Field) {
 		fComment = f.Comment
 	}
 
-	fType = filepath.Base(f.Type)
-
-	if strings.HasPrefix(f.Type, "*") {
-		fType = "*" + fType
-	}
-
 	switch {
 	case r.hasTags && r.hasComments:
-		fmtc.Printf(r.format, f.Name, fType, fTag, fComment)
+		fmtc.Printf(r.format, f.Name, f.Type, fTag, fComment)
 	case r.hasTags && !r.hasComments:
-		fmtc.Printf(r.format, f.Name, fType, fTag)
+		fmtc.Printf(r.format, f.Name, f.Type, fTag)
 	case !r.hasTags && r.hasComments:
-		fmtc.Printf(r.format, f.Name, fType, fComment)
+		fmtc.Printf(r.format, f.Name, f.Type, fComment)
 	default:
-		fmtc.Printf(r.format, f.Name, fType)
+		fmtc.Printf(r.format, f.Name, f.Type)
 	}
 }
 
