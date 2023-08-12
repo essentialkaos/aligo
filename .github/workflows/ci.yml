@@ -70,7 +70,6 @@ jobs:
         uses: essentialkaos/aligo-action@v2
         with:
           files: ./...
-          version: latest
 
   Typos:
     name: Typos

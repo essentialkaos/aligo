@@ -28,7 +28,7 @@
 To build the _aligo_ from scratch, make sure you have a working Go 1.18+ workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
-go install github.com/essentialkaos/aligo@latest
+go install github.com/essentialkaos/aligo/v2@latest
 ```
 
 #### Using with Github Actions
