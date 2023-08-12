@@ -12,7 +12,7 @@
 
 <br/>
 
-`aligo` is a utility for checking and viewing Golang struct alignment info.
+𝑎𝑙𝑖𝑔𝑜 is a utility for checking and viewing Golang struct alignment info.
 
 ### Screenshots
 
@@ -25,7 +25,7 @@
 
 #### From source
 
-To build the `aligo` from scratch, make sure you have a working Go 1.18+ workspace (_[instructions](https://go.dev/doc/install)_), then:
+To build the _aligo_ from scratch, make sure you have a working Go 1.18+ workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
 go install github.com/essentialkaos/aligo@latest
