@@ -62,7 +62,7 @@ var optMap = options.Map{
 	OPT_TAGS:     {Mergeble: true},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
-	OPT_VER:      {Type: options.BOOL},
+	OPT_VER:      {Type: options.MIXED},
 
 	OPT_VERB_VER:     {Type: options.BOOL},
 	OPT_COMPLETION:   {},
@@ -93,7 +93,7 @@ func Run(gitRev string, gomod []byte) {
 		printMan()
 		os.Exit(0)
 	case options.GetB(OPT_VER):
-		genAbout(gitRev).Print()
+		genAbout(gitRev).Print(options.GetS(OPT_VER))
 		os.Exit(0)
 	case options.GetB(OPT_VERB_VER):
 		support.Print(APP, VER, gitRev, gomod)
