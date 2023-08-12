@@ -31,6 +31,39 @@ To build the `aligo` from scratch, make sure you have a working Go 1.18+ workspa
 go install github.com/essentialkaos/aligo@latest
 ```
 
+#### Using with Github Actions
+
+For using _aligo_ with Github Actions use this workflow file or add job `Aligo` to your workflow:
+
+```yml
+name: Aligo
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+
+jobs:
+  Aligo:
+    name: Aligo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.20.x'
+
+      - name: Check Golang sources with Aligo
+        uses: essentialkaos/aligo-action@v2
+        with:
+          files: ./...
+```
+
 ### Command-line completion
 
 You can generate completion for `bash`, `zsh` or `fish` shell.
@@ -40,12 +73,10 @@ Bash:
 sudo aligo --completion=bash 1> /etc/bash_completion.d/aligo
 ```
 
-
 ZSH:
 ```bash
 sudo aligo --completion=zsh 1> /usr/share/zsh/site-functions/aligo
 ```
-
 
 Fish:
 ```bash
@@ -54,7 +85,7 @@ sudo aligo --completion=fish 1> /usr/share/fish/vendor_completions.d/aligo.fish
 
 ### Man documentation
 
-You can generate man page for aligo using next command:
+You can generate man page for _aligo_ using next command:
 
 ```bash
 aligo --generate-man | sudo gzip > /usr/share/man/man1/aligo.1.gz

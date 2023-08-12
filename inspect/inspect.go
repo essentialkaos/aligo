@@ -121,7 +121,7 @@ func processPackage(pkg *packages.Package) (*report.Package, error) {
 				}
 
 			case *ast.ImportSpec:
-				ntPath := strings.Trim(nt.Path.Value, "\"")
+				ntPath := strings.Trim(nt.Path.Value, `"`)
 
 				if strings.Contains(ntPath, "/") {
 					if nt.Name == nil {
@@ -239,8 +239,12 @@ func convertPosition(pos token.Position) report.Position {
 func formatValueType(typ string, mappings map[string]string) string {
 	for k, v := range mappings {
 		if strings.Contains(typ, k) {
-			return strings.Replace(typ, k, v, -1)
+			typ = strings.ReplaceAll(typ, k, v)
 		}
+	}
+
+	if strings.ContainsRune(typ, '/') {
+		return path.Base(typ)
 	}
 
 	return typ
