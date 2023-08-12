@@ -30,6 +30,7 @@ func showOSInfo() {
 		printInfo(12, "ID Like", osInfo.IDLike)
 		printInfo(12, "Version ID", osInfo.VersionID)
 		printInfo(12, "Version Code", osInfo.VersionCodename)
+		printInfo(12, "Platform ID", osInfo.PlatformID)
 		printInfo(12, "CPE", osInfo.CPEName)
 	}
 
