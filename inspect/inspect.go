@@ -20,7 +20,7 @@ import (
 
 	"golang.org/x/tools/go/packages"
 
-	"github.com/essentialkaos/aligo/report"
+	"github.com/essentialkaos/aligo/v2/report"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //

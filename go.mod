@@ -1,4 +1,4 @@
-module github.com/essentialkaos/aligo
+module github.com/essentialkaos/aligo/v2
 
 go 1.18
 

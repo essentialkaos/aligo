@@ -119,7 +119,7 @@ func showDepsInfo(gomod []byte) {
 	}
 }
 
-// extractGitRevFromBuildInfo extracts git SHA from embeded build info
+// extractGitRevFromBuildInfo extracts git SHA from embedded build info
 func extractGitRevFromBuildInfo() string {
 	info, ok := debug.ReadBuildInfo()
 

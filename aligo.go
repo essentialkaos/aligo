@@ -10,7 +10,7 @@ package main
 import (
 	_ "embed"
 
-	CLI "github.com/essentialkaos/aligo/cli"
+	CLI "github.com/essentialkaos/aligo/v2/cli"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
