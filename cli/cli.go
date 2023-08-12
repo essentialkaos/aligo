@@ -26,8 +26,8 @@ import (
 	"github.com/essentialkaos/ek/v12/usage/man"
 	"github.com/essentialkaos/ek/v12/usage/update"
 
-	"github.com/essentialkaos/aligo/cli/support"
-	"github.com/essentialkaos/aligo/inspect"
+	"github.com/essentialkaos/aligo/v2/cli/support"
+	"github.com/essentialkaos/aligo/v2/inspect"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -35,7 +35,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "2.0.1"
+	VER  = "2.0.2"
 	DESC = "Utility for viewing and checking Golang struct alignment"
 )
 

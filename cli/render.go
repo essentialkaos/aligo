@@ -15,8 +15,8 @@ import (
 	"github.com/essentialkaos/ek/v12/fmtutil"
 	"github.com/essentialkaos/ek/v12/mathutil"
 
-	"github.com/essentialkaos/aligo/inspect"
-	"github.com/essentialkaos/aligo/report"
+	"github.com/essentialkaos/aligo/v2/inspect"
+	"github.com/essentialkaos/aligo/v2/report"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
