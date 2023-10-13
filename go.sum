@@ -1,8 +1,8 @@
 github.com/essentialkaos/check v1.4.0 h1:kWdFxu9odCxUqo1NNFNJmguGrDHgwi3A8daXX1nkuKk=
 github.com/essentialkaos/depsy v1.1.0 h1:U6dp687UkQwXlZU17Hg2KMxbp3nfZAoZ8duaeUFYvJI=
 github.com/essentialkaos/depsy v1.1.0/go.mod h1:kpiTAV17dyByVnrbNaMcZt2jRwvuXClUYOzpyJQwtG8=
-github.com/essentialkaos/ek/v12 v12.79.0 h1:Dq/bCqk8/N5h/r5jJA2UHc1YoUEVYcc7xnR0DI5L9wA=
-github.com/essentialkaos/ek/v12 v12.79.0/go.mod h1:S9/XSKhEAdylL3PF8GAnUeKKyd92VrDGR4YGacHfz0c=
+github.com/essentialkaos/ek/v12 v12.80.0 h1:Yy3VF9J18qdhMZt1Tl7fKtjLvg6PdZX5rcDdk92KNys=
+github.com/essentialkaos/ek/v12 v12.80.0/go.mod h1:X0gkyjBCP4QiD+sV4D52aquLDLGUmHteMEL7Rsgbev0=
 github.com/kisielk/gotool v1.0.0 h1:AV2c/EiW3KqPNT9ZKl07ehoAGi4C5/01Cfbblndcapg=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
