@@ -6,7 +6,7 @@ require (
 	github.com/essentialkaos/depsy v1.1.0
 	github.com/essentialkaos/ek/v12 v12.88.1
 	github.com/kisielk/gotool v1.0.0
-	golang.org/x/tools v0.15.0
+	golang.org/x/tools v0.16.0
 )
 
 require (
