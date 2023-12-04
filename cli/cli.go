@@ -18,6 +18,7 @@ import (
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fmtutil"
 	"github.com/essentialkaos/ek/v12/options"
+	"github.com/essentialkaos/ek/v12/pager"
 	"github.com/essentialkaos/ek/v12/strutil"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
@@ -35,8 +36,8 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "2.0.2"
-	DESC = "Utility for viewing and checking Golang struct alignment"
+	VER  = "2.1.0"
+	DESC = "Utility for viewing and checking Go struct alignment"
 )
 
 // Constants with options names
@@ -44,6 +45,7 @@ const (
 	OPT_ARCH     = "a:arch"
 	OPT_STRUCT   = "s:struct"
 	OPT_TAGS     = "t:tags"
+	OPT_PAGER    = "P:pager"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -60,6 +62,7 @@ var optMap = options.Map{
 	OPT_ARCH:     {},
 	OPT_STRUCT:   {},
 	OPT_TAGS:     {Mergeble: true},
+	OPT_PAGER:    {Type: options.BOOL},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
 	OPT_VER:      {Type: options.MIXED},
@@ -68,6 +71,8 @@ var optMap = options.Map{
 	OPT_COMPLETION:   {},
 	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
+
+var colorTagApp, colorTagVer string
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -122,6 +127,15 @@ func configureUI() {
 
 	strutil.EllipsisSuffix = "…"
 	fmtutil.SeparatorTitleColorTag = "{*}"
+
+	switch {
+	case fmtc.IsTrueColorSupported():
+		colorTagApp, colorTagVer = "{*}{&}{#00ADD8}", "{#5DC9E2}"
+	case fmtc.Is256ColorsSupported():
+		colorTagApp, colorTagVer = "{*}{&}{#38}", "{#74}"
+	default:
+		colorTagApp, colorTagVer = "{*}{&}{c}", "{c}"
+	}
 }
 
 // prepare configures inspector
@@ -153,6 +167,12 @@ func process(args options.Arguments) {
 
 	if report == nil && err == nil {
 		os.Exit(1)
+	}
+
+	if options.GetB(OPT_PAGER) {
+		if pager.Setup() == nil {
+			defer pager.Complete()
+		}
 	}
 
 	switch cmd {
@@ -227,6 +247,8 @@ func printMan() {
 func genUsage() *usage.Info {
 	info := usage.NewInfo("", "package…")
 
+	info.AppNameColorTag = colorTagApp
+
 	info.AddCommand("check", "Check package for alignment problems")
 	info.AddCommand("view", "Print alignment info for all structs")
 
@@ -264,11 +286,16 @@ func genUsage() *usage.Info {
 // genAbout generates info about version
 func genAbout(gitRev string) *usage.About {
 	about := &usage.About{
-		App:           APP,
-		Version:       VER,
-		Desc:          DESC,
-		Year:          2009,
-		Owner:         "ESSENTIAL KAOS",
+		App:     APP,
+		Version: VER,
+		Desc:    DESC,
+		Year:    2009,
+		Owner:   "ESSENTIAL KAOS",
+
+		AppNameColorTag: colorTagApp,
+		VersionColorTag: colorTagVer,
+		DescSeparator:   "—",
+
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/aligo", update.GitHubChecker},
 	}

@@ -196,7 +196,10 @@ func printPackageSeparator(path string) {
 		path = "{GOPATH}" + path[1:]
 	}
 
-	fmtc.Printf("{s}{@*} ••• %s{!}\n\n", fmtutil.Align(path, fmtutil.LEFT, 86))
+	fmtutil.Separator(true)
+	fmtc.Printf(" ▾ {s}%s{!}\n", path)
+	fmtutil.Separator(true)
+	fmtc.NewLine()
 }
 
 // printPackageInfo prints package info
