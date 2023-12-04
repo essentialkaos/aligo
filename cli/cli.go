@@ -201,10 +201,8 @@ func process(args options.Arguments) (error, bool) {
 	case "check", "c":
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), true)
-		} else {
-			if !Check(report) {
-				return nil, false
-			}
+		} else if !Check(report) {
+			return nil, false
 		}
 
 	default:
@@ -232,11 +230,11 @@ func printCompletion() int {
 
 	switch options.GetS(OPT_COMPLETION) {
 	case "bash":
-		fmt.Printf(bash.Generate(info, "aligo"))
+		fmt.Print(bash.Generate(info, "aligo"))
 	case "fish":
-		fmt.Printf(fish.Generate(info, "aligo"))
+		fmt.Print(fish.Generate(info, "aligo"))
 	case "zsh":
-		fmt.Printf(zsh.Generate(info, optMap, "aligo"))
+		fmt.Print(zsh.Generate(info, optMap, "aligo"))
 	default:
 		return 1
 	}
