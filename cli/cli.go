@@ -108,8 +108,15 @@ func Run(gitRev string, gomod []byte) {
 		os.Exit(0)
 	}
 
-	prepare()
-	process(args)
+	err, ok := process(args)
+
+	if err != nil {
+		printError(err.Error())
+	}
+
+	if !ok {
+		os.Exit(1)
+	}
 }
 
 // preConfigureUI preconfigures UI based on information about user terminal
@@ -126,7 +133,7 @@ func configureUI() {
 	}
 
 	strutil.EllipsisSuffix = "…"
-	fmtutil.SeparatorTitleColorTag = "{*}"
+	fmtutil.SeparatorSymbol = "–"
 
 	switch {
 	case fmtc.IsTrueColorSupported():
@@ -139,7 +146,7 @@ func configureUI() {
 }
 
 // prepare configures inspector
-func prepare() {
+func prepare() error {
 	arch := build.Default.GOARCH
 
 	if options.Has(OPT_ARCH) {
@@ -149,12 +156,20 @@ func prepare() {
 	inspect.Sizes = types.SizesFor("gc", arch)
 
 	if inspect.Sizes == nil {
-		printErrorAndExit("Unknown arch %s", arch)
+		return fmt.Errorf("Unknown arch %s", arch)
 	}
+
+	return nil
 }
 
-// process starts processing
-func process(args options.Arguments) {
+// process starts source code processing
+func process(args options.Arguments) (error, bool) {
+	err := prepare()
+
+	if err != nil {
+		return err, false
+	}
+
 	cmd := args.Get(0).ToLower().String()
 	dirs := args.Strings()[1:]
 	tags := strings.Split(options.GetS(OPT_TAGS), ",")
@@ -162,11 +177,11 @@ func process(args options.Arguments) {
 	report, err := inspect.ProcessSources(dirs, tags)
 
 	if err != nil {
-		printErrorAndExit(err.Error())
+		return err, false
 	}
 
-	if report == nil && err == nil {
-		os.Exit(1)
+	if report == nil {
+		return nil, true
 	}
 
 	if options.GetB(OPT_PAGER) {
@@ -187,14 +202,16 @@ func process(args options.Arguments) {
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), true)
 		} else {
-			if Check(report) {
-				os.Exit(1)
+			if !Check(report) {
+				return nil, false
 			}
 		}
 
 	default:
-		printErrorAndExit("Command %s is unsupported", cmd)
+		return fmt.Errorf("Command %s is unsupported", cmd), false
 	}
+
+	return nil, true
 }
 
 // printError prints error message to console
@@ -205,12 +222,6 @@ func printError(f string, a ...interface{}) {
 // printError prints warning message to console
 func printWarn(f string, a ...interface{}) {
 	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
-}
-
-// printErrorAndExit print error message and exit with exit code 1
-func printErrorAndExit(f string, a ...interface{}) {
-	printError(f, a...)
-	os.Exit(1)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
