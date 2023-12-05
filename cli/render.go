@@ -58,6 +58,7 @@ func PrintStruct(r *report.Report, strName string, optimal bool) {
 
 	if pkg == nil && str == nil {
 		printWarn("Can't find struct with name \"%s\"", strName)
+		return
 	}
 
 	printPackageSeparator(pkg.Path)
@@ -196,7 +197,10 @@ func printPackageSeparator(path string) {
 		path = "{GOPATH}" + path[1:]
 	}
 
-	fmtc.Printf("{s}{@*} ••• %s{!}\n\n", fmtutil.Align(path, fmtutil.LEFT, 86))
+	fmtutil.Separator(true)
+	fmtc.Printf(" ▾ {s}%s{!}\n", path)
+	fmtutil.Separator(true)
+	fmtc.NewLine()
 }
 
 // printPackageInfo prints package info
@@ -274,7 +278,7 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 	for index, field := range fields {
 		r.PrintField(field)
 
-		fmt.Printf(strings.Repeat("  ", int(counter+1)))
+		fmt.Print(strings.Repeat("  ", int(counter+1)))
 
 		for i := int64(0); i < field.Size; i++ {
 			fmtc.Printf("{g}■ {!}")

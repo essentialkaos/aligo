@@ -121,6 +121,7 @@ Options
   --arch, -a name      Architecture name
   --struct, -s name    Print info only about struct with given name
   --tags, -t tag…      Build tags (mergeble)
+  --pager, -P          Use pager for long output
   --no-color, -nc      Disable colors in output
   --help, -h           Show this help message
   --version, -v        Show version

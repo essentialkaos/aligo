@@ -147,7 +147,7 @@ func getHashColorBullet(v string) string {
 
 // printInfo formats and prints info record
 func printInfo(size int, name, value string) {
-	name = name + ":"
+	name += ":"
 	size++
 
 	if value == "" {

@@ -18,6 +18,7 @@ import (
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fmtutil"
 	"github.com/essentialkaos/ek/v12/options"
+	"github.com/essentialkaos/ek/v12/pager"
 	"github.com/essentialkaos/ek/v12/strutil"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
@@ -35,8 +36,8 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "2.0.2"
-	DESC = "Utility for viewing and checking Golang struct alignment"
+	VER  = "2.1.0"
+	DESC = "Utility for viewing and checking Go struct alignment"
 )
 
 // Constants with options names
@@ -44,6 +45,7 @@ const (
 	OPT_ARCH     = "a:arch"
 	OPT_STRUCT   = "s:struct"
 	OPT_TAGS     = "t:tags"
+	OPT_PAGER    = "P:pager"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -60,6 +62,7 @@ var optMap = options.Map{
 	OPT_ARCH:     {},
 	OPT_STRUCT:   {},
 	OPT_TAGS:     {Mergeble: true},
+	OPT_PAGER:    {Type: options.BOOL},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
 	OPT_VER:      {Type: options.MIXED},
@@ -68,6 +71,8 @@ var optMap = options.Map{
 	OPT_COMPLETION:   {},
 	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
+
+var colorTagApp, colorTagVer string
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -103,8 +108,15 @@ func Run(gitRev string, gomod []byte) {
 		os.Exit(0)
 	}
 
-	prepare()
-	process(args)
+	err, ok := process(args)
+
+	if err != nil {
+		printError(err.Error())
+	}
+
+	if !ok {
+		os.Exit(1)
+	}
 }
 
 // preConfigureUI preconfigures UI based on information about user terminal
@@ -121,11 +133,20 @@ func configureUI() {
 	}
 
 	strutil.EllipsisSuffix = "…"
-	fmtutil.SeparatorTitleColorTag = "{*}"
+	fmtutil.SeparatorSymbol = "–"
+
+	switch {
+	case fmtc.IsTrueColorSupported():
+		colorTagApp, colorTagVer = "{*}{&}{#00ADD8}", "{#5DC9E2}"
+	case fmtc.Is256ColorsSupported():
+		colorTagApp, colorTagVer = "{*}{&}{#38}", "{#74}"
+	default:
+		colorTagApp, colorTagVer = "{*}{&}{c}", "{c}"
+	}
 }
 
 // prepare configures inspector
-func prepare() {
+func prepare() error {
 	arch := build.Default.GOARCH
 
 	if options.Has(OPT_ARCH) {
@@ -135,12 +156,20 @@ func prepare() {
 	inspect.Sizes = types.SizesFor("gc", arch)
 
 	if inspect.Sizes == nil {
-		printErrorAndExit("Unknown arch %s", arch)
+		return fmt.Errorf("Unknown arch %s", arch)
 	}
+
+	return nil
 }
 
-// process starts processing
-func process(args options.Arguments) {
+// process starts source code processing
+func process(args options.Arguments) (error, bool) {
+	err := prepare()
+
+	if err != nil {
+		return err, false
+	}
+
 	cmd := args.Get(0).ToLower().String()
 	dirs := args.Strings()[1:]
 	tags := strings.Split(options.GetS(OPT_TAGS), ",")
@@ -148,11 +177,17 @@ func process(args options.Arguments) {
 	report, err := inspect.ProcessSources(dirs, tags)
 
 	if err != nil {
-		printErrorAndExit(err.Error())
+		return err, false
 	}
 
-	if report == nil && err == nil {
-		os.Exit(1)
+	if report == nil {
+		return nil, true
+	}
+
+	if options.GetB(OPT_PAGER) {
+		if pager.Setup() == nil {
+			defer pager.Complete()
+		}
 	}
 
 	switch cmd {
@@ -166,15 +201,15 @@ func process(args options.Arguments) {
 	case "check", "c":
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), true)
-		} else {
-			if Check(report) {
-				os.Exit(1)
-			}
+		} else if !Check(report) {
+			return nil, false
 		}
 
 	default:
-		printErrorAndExit("Command %s is unsupported", cmd)
+		return fmt.Errorf("Command %s is unsupported", cmd), false
 	}
+
+	return nil, true
 }
 
 // printError prints error message to console
@@ -187,12 +222,6 @@ func printWarn(f string, a ...interface{}) {
 	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
 }
 
-// printErrorAndExit print error message and exit with exit code 1
-func printErrorAndExit(f string, a ...interface{}) {
-	printError(f, a...)
-	os.Exit(1)
-}
-
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // printCompletion prints completion for given shell
@@ -201,11 +230,11 @@ func printCompletion() int {
 
 	switch options.GetS(OPT_COMPLETION) {
 	case "bash":
-		fmt.Printf(bash.Generate(info, "aligo"))
+		fmt.Print(bash.Generate(info, "aligo"))
 	case "fish":
-		fmt.Printf(fish.Generate(info, "aligo"))
+		fmt.Print(fish.Generate(info, "aligo"))
 	case "zsh":
-		fmt.Printf(zsh.Generate(info, optMap, "aligo"))
+		fmt.Print(zsh.Generate(info, optMap, "aligo"))
 	default:
 		return 1
 	}
@@ -227,12 +256,15 @@ func printMan() {
 func genUsage() *usage.Info {
 	info := usage.NewInfo("", "package…")
 
+	info.AppNameColorTag = colorTagApp
+
 	info.AddCommand("check", "Check package for alignment problems")
 	info.AddCommand("view", "Print alignment info for all structs")
 
 	info.AddOption(OPT_ARCH, "Architecture name", "name")
 	info.AddOption(OPT_STRUCT, "Print info only about struct with given name", "name")
 	info.AddOption(OPT_TAGS, "Build tags {s-}(mergeble){!}", "tag…")
+	info.AddOption(OPT_PAGER, "Use pager for long output")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")
@@ -264,11 +296,16 @@ func genUsage() *usage.Info {
 // genAbout generates info about version
 func genAbout(gitRev string) *usage.About {
 	about := &usage.About{
-		App:           APP,
-		Version:       VER,
-		Desc:          DESC,
-		Year:          2009,
-		Owner:         "ESSENTIAL KAOS",
+		App:     APP,
+		Version: VER,
+		Desc:    DESC,
+		Year:    2009,
+		Owner:   "ESSENTIAL KAOS",
+
+		AppNameColorTag: colorTagApp,
+		VersionColorTag: colorTagVer,
+		DescSeparator:   "—",
+
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/aligo", update.GitHubChecker},
 	}

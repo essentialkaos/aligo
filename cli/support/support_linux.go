@@ -23,9 +23,9 @@ func showOSInfo() {
 	if err == nil {
 		fmtutil.Separator(false, "OS INFO")
 
-		printInfo(12, "Name", osInfo.Name)
-		printInfo(12, "Pretty Name", osInfo.PrettyName)
-		printInfo(12, "Version", osInfo.VersionID)
+		printInfo(12, "Name", osInfo.ColoredName())
+		printInfo(12, "Pretty Name", osInfo.ColoredPrettyName())
+		printInfo(12, "Version", osInfo.Version)
 		printInfo(12, "ID", osInfo.ID)
 		printInfo(12, "ID Like", osInfo.IDLike)
 		printInfo(12, "Version ID", osInfo.VersionID)
@@ -38,11 +38,9 @@ func showOSInfo() {
 
 	if err != nil {
 		return
-	} else {
-		if osInfo == nil {
-			fmtutil.Separator(false, "SYSTEM INFO")
-			printInfo(12, "Name", systemInfo.OS)
-		}
+	} else if osInfo == nil {
+		fmtutil.Separator(false, "SYSTEM INFO")
+		printInfo(12, "Name", systemInfo.OS)
 	}
 
 	printInfo(12, "Arch", systemInfo.Arch)

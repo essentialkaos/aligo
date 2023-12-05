@@ -253,8 +253,8 @@ func formatValueType(typ string, mappings map[string]string) string {
 // formatPackageName formats package name
 func formatPackageName(p string) string {
 	p = path.Base(p)
-	p = strings.Replace(p, "go-", "", -1)
-	p = strings.Replace(p, "go.", "", -1)
+	p = strings.ReplaceAll(p, "go-", "")
+	p = strings.ReplaceAll(p, "go.", "")
 
 	if strings.Contains(p, ".") {
 		p = p[:strings.Index(p, ".")]
@@ -317,11 +317,5 @@ func (s *optimalSorter) Less(i, j int) bool {
 		return false
 	}
 }
-
-type pkgSlice []*report.Package
-
-func (s pkgSlice) Len() int           { return len(s) }
-func (s pkgSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
-func (s pkgSlice) Less(i, j int) bool { return s[i].Path < s[j].Path }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
