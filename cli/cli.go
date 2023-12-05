@@ -264,6 +264,7 @@ func genUsage() *usage.Info {
 	info.AddOption(OPT_ARCH, "Architecture name", "name")
 	info.AddOption(OPT_STRUCT, "Print info only about struct with given name", "name")
 	info.AddOption(OPT_TAGS, "Build tags {s-}(mergeble){!}", "tag…")
+	info.AddOption(OPT_PAGER, "Use pager for long output")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")
