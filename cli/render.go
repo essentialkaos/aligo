@@ -68,7 +68,7 @@ func PrintStruct(r *report.Report, strName string, optimal bool) {
 // Check checks report for problems
 func Check(r *report.Report) bool {
 	if isEmptyReport(r) {
-		return false
+		return true
 	}
 
 	var hasProblems bool
@@ -85,9 +85,10 @@ func Check(r *report.Report) bool {
 
 	if !hasProblems {
 		fmtc.Println("{g}All structs are well aligned{!}")
+		return true
 	}
 
-	return hasProblems
+	return false
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //

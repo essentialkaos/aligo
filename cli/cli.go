@@ -36,7 +36,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "2.1.0"
+	VER  = "2.1.1"
 	DESC = "Utility for viewing and checking Go struct alignment"
 )
 
