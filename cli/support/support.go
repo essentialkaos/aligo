@@ -94,7 +94,7 @@ func showEnvInfo() {
 	}
 
 	goVer := string(out)
-	goVer = strutil.ReadField(goVer, 2, false, " ")
+	goVer = strutil.ReadField(goVer, 2, false, ' ')
 	goVer = strutil.Exclude(goVer, "go")
 
 	printInfo(2, "Go", goVer)
