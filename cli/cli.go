@@ -20,6 +20,9 @@ import (
 	"github.com/essentialkaos/ek/v12/options"
 	"github.com/essentialkaos/ek/v12/pager"
 	"github.com/essentialkaos/ek/v12/strutil"
+	"github.com/essentialkaos/ek/v12/support"
+	"github.com/essentialkaos/ek/v12/support/apps"
+	"github.com/essentialkaos/ek/v12/support/deps"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
 	"github.com/essentialkaos/ek/v12/usage/completion/fish"
@@ -27,7 +30,6 @@ import (
 	"github.com/essentialkaos/ek/v12/usage/man"
 	"github.com/essentialkaos/ek/v12/usage/update"
 
-	"github.com/essentialkaos/aligo/v2/cli/support"
 	"github.com/essentialkaos/aligo/v2/inspect"
 )
 
@@ -36,7 +38,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "2.1.1"
+	VER  = "2.1.2"
 	DESC = "Utility for viewing and checking Go struct alignment"
 )
 
@@ -101,7 +103,9 @@ func Run(gitRev string, gomod []byte) {
 		genAbout(gitRev).Print(options.GetS(OPT_VER))
 		os.Exit(0)
 	case options.GetB(OPT_VERB_VER):
-		support.Print(APP, VER, gitRev, gomod)
+		support.Collect(APP, VER).WithRevision(gitRev).
+			WithDeps(deps.Extract(gomod)).
+			WithApps(apps.Golang()).Print()
 		os.Exit(0)
 	case options.GetB(OPT_HELP) || len(args) < 2:
 		genUsage().Print()
