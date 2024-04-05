@@ -217,12 +217,12 @@ func process(args options.Arguments) (error, bool) {
 }
 
 // printError prints error message to console
-func printError(f string, a ...interface{}) {
+func printError(f string, a ...any) {
 	fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
 }
 
 // printError prints warning message to console
-func printWarn(f string, a ...interface{}) {
+func printWarn(f string, a ...any) {
 	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
 }
 
