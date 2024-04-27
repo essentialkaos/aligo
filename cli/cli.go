@@ -23,6 +23,8 @@ import (
 	"github.com/essentialkaos/ek/v12/support"
 	"github.com/essentialkaos/ek/v12/support/apps"
 	"github.com/essentialkaos/ek/v12/support/deps"
+	"github.com/essentialkaos/ek/v12/terminal"
+	"github.com/essentialkaos/ek/v12/terminal/tty"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
 	"github.com/essentialkaos/ek/v12/usage/completion/fish"
@@ -38,7 +40,7 @@ import (
 // App info
 const (
 	APP  = "aligo"
-	VER  = "2.1.2"
+	VER  = "2.1.3"
 	DESC = "Utility for viewing and checking Go struct alignment"
 )
 
@@ -86,8 +88,9 @@ func Run(gitRev string, gomod []byte) {
 
 	args, errs := options.Parse(optMap)
 
-	if len(errs) != 0 {
-		printError(errs[0].Error())
+	if !errs.IsEmpty() {
+		terminal.Error("Options parsing errors:")
+		terminal.Error(errs.String())
 		os.Exit(1)
 	}
 
@@ -115,7 +118,7 @@ func Run(gitRev string, gomod []byte) {
 	err, ok := process(args)
 
 	if err != nil {
-		printError(err.Error())
+		terminal.Error(err)
 	}
 
 	if !ok {
@@ -125,8 +128,17 @@ func Run(gitRev string, gomod []byte) {
 
 // preConfigureUI preconfigures UI based on information about user terminal
 func preConfigureUI() {
-	if os.Getenv("NO_COLOR") != "" {
+	if !tty.IsTTY() {
 		fmtc.DisableColors = true
+	}
+
+	switch {
+	case fmtc.IsTrueColorSupported():
+		colorTagApp, colorTagVer = "{*}{&}{#00ADD8}", "{#5DC9E2}"
+	case fmtc.Is256ColorsSupported():
+		colorTagApp, colorTagVer = "{*}{&}{#38}", "{#74}"
+	default:
+		colorTagApp, colorTagVer = "{*}{&}{c}", "{c}"
 	}
 }
 
@@ -138,15 +150,6 @@ func configureUI() {
 
 	strutil.EllipsisSuffix = "…"
 	fmtutil.SeparatorSymbol = "–"
-
-	switch {
-	case fmtc.IsTrueColorSupported():
-		colorTagApp, colorTagVer = "{*}{&}{#00ADD8}", "{#5DC9E2}"
-	case fmtc.Is256ColorsSupported():
-		colorTagApp, colorTagVer = "{*}{&}{#38}", "{#74}"
-	default:
-		colorTagApp, colorTagVer = "{*}{&}{c}", "{c}"
-	}
 }
 
 // prepare configures inspector
@@ -216,16 +219,6 @@ func process(args options.Arguments) (error, bool) {
 	return nil, true
 }
 
-// printError prints error message to console
-func printError(f string, a ...any) {
-	fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
-}
-
-// printError prints warning message to console
-func printWarn(f string, a ...any) {
-	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
-}
-
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // printCompletion prints completion for given shell
@@ -248,12 +241,7 @@ func printCompletion() int {
 
 // printMan prints man page
 func printMan() {
-	fmt.Println(
-		man.Generate(
-			genUsage(),
-			genAbout(""),
-		),
-	)
+	fmt.Println(man.Generate(genUsage(), genAbout("")))
 }
 
 // genUsage generates usage info
@@ -308,7 +296,7 @@ func genAbout(gitRev string) *usage.About {
 
 		AppNameColorTag: colorTagApp,
 		VersionColorTag: colorTagVer,
-		DescSeparator:   "—",
+		DescSeparator:   "{s}—{!}",
 
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/aligo", update.GitHubChecker},
