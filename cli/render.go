@@ -14,6 +14,7 @@ import (
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fmtutil"
 	"github.com/essentialkaos/ek/v12/mathutil"
+	"github.com/essentialkaos/ek/v12/terminal"
 
 	"github.com/essentialkaos/aligo/v2/inspect"
 	"github.com/essentialkaos/aligo/v2/report"
@@ -50,14 +51,14 @@ func PrintStruct(r *report.Report, strName string, optimal bool) {
 	}
 
 	if strName == "" {
-		printWarn("You should define struct name")
+		terminal.Warn("You should define struct name")
 		return
 	}
 
 	pkg, str := findStruct(r, strName)
 
 	if pkg == nil && str == nil {
-		printWarn("Can't find struct with name \"%s\"", strName)
+		terminal.Warn("Can't find struct with name %q", strName)
 		return
 	}
 
@@ -185,7 +186,7 @@ func (r *Renderer) PrintPlaceholder() {
 // isEmptyReport returns true if report is empty
 func isEmptyReport(r *report.Report) bool {
 	if r.IsEmpty() {
-		printWarn("Given package doesn't have any structs")
+		terminal.Warn("Given package doesn't have any structs")
 		return true
 	}
 
