@@ -282,6 +282,11 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 
 		fmt.Print(strings.Repeat("  ", int(counter+1)))
 
+		// align memory, col
+		for ; counter%field.Size != 0; counter++ {
+			fmtc.Printf("{r}□ {!}")
+		}
+
 		for i := int64(0); i < field.Size; i++ {
 			fmtc.Printf("{g}■ {!}")
 
