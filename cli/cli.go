@@ -106,9 +106,11 @@ func Run(gitRev string, gomod []byte) {
 		genAbout(gitRev).Print(options.GetS(OPT_VER))
 		os.Exit(0)
 	case options.GetB(OPT_VERB_VER):
-		support.Collect(APP, VER).WithRevision(gitRev).
+		support.Collect(APP, VER).
+			WithRevision(gitRev).
 			WithDeps(deps.Extract(gomod)).
-			WithApps(apps.Golang()).Print()
+			WithApps(apps.Golang()).
+			Print()
 		os.Exit(0)
 	case options.GetB(OPT_HELP) || len(args) < 2:
 		genUsage().Print()
