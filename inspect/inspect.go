@@ -13,6 +13,7 @@ import (
 	"go/token"
 	"go/types"
 	"path"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -78,7 +79,23 @@ func GetMaxAlign() int64 {
 		return 8
 	}
 
-	return Sizes.(*types.StdSizes).MaxAlign
+	switch t := Sizes.(type) {
+	case *types.StdSizes:
+		return t.MaxAlign
+	}
+
+	// Get MaxAlign from private struct like *types.gcSizes
+	ptr := reflect.ValueOf(Sizes)
+
+	if ptr.IsValid() {
+		f := reflect.Indirect(ptr).FieldByName("MaxAlign")
+
+		if f.IsValid() {
+			return f.Int()
+		}
+	}
+
+	return 8
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
