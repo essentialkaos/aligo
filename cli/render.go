@@ -245,11 +245,11 @@ func printStructInfo(str *report.Struct, optimal bool) {
 	printStructSizeInfo(str, optimal)
 
 	if str.Size == 0 {
-		fmtc.Printf("  type {*}%s{!} struct {s}{ }{!}\n\n", str.Name)
+		fmtc.Printf("  type {&}{*}%s{!} struct {s}{ }{!}\n\n", str.Name)
 		return
 	}
 
-	fmtc.Printf("  type {*}%s{!} struct {s}{{!}\n", str.Name)
+	fmtc.Printf("  type {&}{*}%s{!} struct {s}{{!}\n", str.Name)
 
 	if optimal {
 		printAlignedFieldsInfo(str.AlignedFields)
@@ -283,12 +283,12 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 		fmt.Print(strings.Repeat("  ", int(counter+1)))
 
 		for counter%field.Size != 0 {
-			fmtc.Printf("{r}□ {!}")
+			fmtc.Printf("{r}□{!} ")
 			counter++
 		}
 
 		for i := int64(0); i < field.Size; i++ {
-			fmtc.Printf("{g}■ {!}")
+			fmtc.Printf("{g}■{!} ")
 
 			counter++
 
@@ -302,10 +302,10 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 		}
 
 		if index+1 < len(fields) && counter != 0 && fields[index+1].Size > maxAlign-counter {
-			fmtc.Printf(strings.Repeat("{r}□ {!}", int(maxAlign-counter)))
+			fmtc.Printf(strings.Repeat("{r}□{!} ", int(maxAlign-counter)))
 			counter = 0
 		} else if index+1 == len(fields) && counter != 0 {
-			fmtc.Printf(strings.Repeat("{g}□ {!}", int(maxAlign-counter)))
+			fmtc.Printf(strings.Repeat("{g}□{!} ", int(maxAlign-counter)))
 		}
 
 		fmtc.NewLine()
