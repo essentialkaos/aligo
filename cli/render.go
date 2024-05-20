@@ -16,6 +16,7 @@ import (
 	"github.com/essentialkaos/ek/v12/mathutil"
 	"github.com/essentialkaos/ek/v12/terminal"
 
+	"github.com/essentialkaos/aligo/v2/cli/i18n"
 	"github.com/essentialkaos/aligo/v2/inspect"
 	"github.com/essentialkaos/aligo/v2/report"
 )
@@ -51,14 +52,14 @@ func PrintStruct(r *report.Report, strName string, optimal bool) {
 	}
 
 	if strName == "" {
-		terminal.Warn("You should define struct name")
+		terminal.Warn(i18n.UI.ERRORS.EMPTY_STRUCT_NAME)
 		return
 	}
 
 	pkg, str := findStruct(r, strName)
 
 	if pkg == nil && str == nil {
-		terminal.Warn("Can't find struct with name %q", strName)
+		terminal.Warn(i18n.UI.ERRORS.NO_STRUCT, strName)
 		return
 	}
 
@@ -85,7 +86,7 @@ func Check(r *report.Report) bool {
 	}
 
 	if !hasProblems {
-		fmtc.Println("{g}All structs are well aligned{!}")
+		fmtc.Println(i18n.UI.INFO.ALL_OPTIMAL.String())
 		return true
 	}
 
@@ -186,7 +187,7 @@ func (r *Renderer) PrintPlaceholder() {
 // isEmptyReport returns true if report is empty
 func isEmptyReport(r *report.Report) bool {
 	if r.IsEmpty() {
-		terminal.Warn("Given package doesn't have any structs")
+		terminal.Warn(i18n.UI.ERRORS.NO_ANY_STRUCTS)
 		return true
 	}
 
@@ -222,18 +223,18 @@ func printPackageInfo(pkg *report.Package, onlyProblems bool) {
 func printStructSizeInfo(str *report.Struct, optimal bool) {
 	if optimal {
 		fmtc.Printf(
-			"Struct {*}%s{!} {s-}(%s:%d){!} fields order can be optimized (%d → %d)\n\n",
+			i18n.UI.INFO.OPTIMIZE_ADVICE.Add("", "\n\n"),
 			str.Name, str.Position.File, str.Position.Line, str.Size, str.OptimalSize,
 		)
 	} else {
 		if str.Size != str.OptimalSize {
 			fmtc.Printf(
-				"  {s-}// %s:%d | Size: %d (Optimal: %d){!}\n",
+				i18n.UI.INFO.WITH_OPTIMAL.Add("  ", "\n"),
 				str.Position.File, str.Position.Line, str.Size, str.OptimalSize,
 			)
 		} else {
 			fmtc.Printf(
-				"  {s-}// %s:%d | Size: %d{!}\n",
+				i18n.UI.INFO.ALREADY_OPTIMAL.Add("  ", "\n"),
 				str.Position.File, str.Position.Line, str.Size,
 			)
 		}

@@ -32,6 +32,7 @@ import (
 	"github.com/essentialkaos/ek/v12/usage/man"
 	"github.com/essentialkaos/ek/v12/usage/update"
 
+	"github.com/essentialkaos/aligo/v2/cli/i18n"
 	"github.com/essentialkaos/aligo/v2/inspect"
 )
 
@@ -39,9 +40,8 @@ import (
 
 // App info
 const (
-	APP  = "aligo"
-	VER  = "2.1.4"
-	DESC = "Utility for viewing and checking Go struct alignment"
+	APP = "aligo"
+	VER = "2.2.0"
 )
 
 // Constants with options names
@@ -89,7 +89,7 @@ func Run(gitRev string, gomod []byte) {
 	args, errs := options.Parse(optMap)
 
 	if !errs.IsEmpty() {
-		terminal.Error("Options parsing errors:")
+		terminal.Error(i18n.UI.ERRORS.OPTION_PARSING.Add("", ":"))
 		terminal.Error(errs.String())
 		os.Exit(1)
 	}
@@ -142,6 +142,8 @@ func preConfigureUI() {
 	default:
 		colorTagApp, colorTagVer = "{*}{&}{c}", "{c}"
 	}
+
+	i18n.SetLanguage()
 }
 
 // configureUI configures user interface
@@ -165,7 +167,7 @@ func prepare() error {
 	inspect.Sizes = types.SizesFor("gc", arch)
 
 	if inspect.Sizes == nil {
-		return fmt.Errorf("Unknown arch %s", arch)
+		return fmt.Errorf(i18n.UI.ERRORS.UNKNOWN_ARCH.String(), arch)
 	}
 
 	return nil
@@ -215,7 +217,7 @@ func process(args options.Arguments) (error, bool) {
 		}
 
 	default:
-		return fmt.Errorf("Command %s is unsupported", cmd), false
+		return fmt.Errorf(i18n.UI.ERRORS.UNSUPPORTED_COMMAND.String(), cmd), false
 	}
 
 	return nil, true
@@ -248,40 +250,44 @@ func printMan() {
 
 // genUsage generates usage info
 func genUsage() *usage.Info {
-	info := usage.NewInfo("", "package…")
+	info := usage.NewInfo("", i18n.UI.USAGE.ARGUMENTS.String())
 
 	info.AppNameColorTag = colorTagApp
 
-	info.AddCommand("check", "Check package for alignment problems")
-	info.AddCommand("view", "Print alignment info for all structs")
+	info.AddCommand("check", i18n.UI.USAGE.COMMANDS.CHECK.String())
+	info.AddCommand("view", i18n.UI.USAGE.COMMANDS.VIEW.String())
 
-	info.AddOption(OPT_ARCH, "Architecture name", "name")
-	info.AddOption(OPT_STRUCT, "Print info only about struct with given name", "name")
-	info.AddOption(OPT_TAGS, "Build tags {s-}(mergeble){!}", "tag…")
-	info.AddOption(OPT_PAGER, "Use pager for long output")
-	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
-	info.AddOption(OPT_HELP, "Show this help message")
-	info.AddOption(OPT_VER, "Show version")
+	info.AddOption(OPT_ARCH, i18n.UI.USAGE.OPTIONS.ARCH.String(), i18n.UI.USAGE.OPTIONS.ARCH_VAL.String())
+	info.AddOption(OPT_STRUCT, i18n.UI.USAGE.OPTIONS.STRUCT.String(), i18n.UI.USAGE.OPTIONS.STRUCT_VAL.String())
+	info.AddOption(OPT_TAGS, i18n.UI.USAGE.OPTIONS.TAGS.String(), i18n.UI.USAGE.OPTIONS.TAGS_VAL.String())
+	info.AddOption(OPT_PAGER, i18n.UI.USAGE.OPTIONS.PAGER.String())
+	info.AddOption(OPT_NO_COLOR, i18n.UI.USAGE.OPTIONS.NO_COLOR.String())
+	info.AddOption(OPT_HELP, i18n.UI.USAGE.OPTIONS.HELP.String())
+	info.AddOption(OPT_VER, i18n.UI.USAGE.OPTIONS.VER.String())
 
 	info.AddExample(
-		"view .", "Show info about all structs in current package",
+		"view .",
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_1.String(),
 	)
 
 	info.AddExample(
-		"check .", "Check current package",
+		"check .",
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_2.String(),
 	)
 
 	info.AddExample(
-		"check ./...", "Check current package and all sub-packages",
+		"check ./...",
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_3.String(),
 	)
 
 	info.AddExample(
-		"--tags tag1,tag2,tag3 check ./...", "Check current package and all sub-packages with custom build tags",
+		"--tags tag1,tag2,tag3 check ./...",
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_4.String(),
 	)
 
 	info.AddExample(
 		"-s PostMessageParameters view .",
-		"Show info about PostMessageParameters struct",
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_5.String(),
 	)
 
 	return info
@@ -292,7 +298,7 @@ func genAbout(gitRev string) *usage.About {
 	about := &usage.About{
 		App:     APP,
 		Version: VER,
-		Desc:    DESC,
+		Desc:    i18n.UI.USAGE.DESC.String(),
 		Year:    2009,
 		Owner:   "ESSENTIAL KAOS",
 
