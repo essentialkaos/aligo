@@ -20,29 +20,6 @@
     .dim { opacity: 0.75; }
     .terminal { font-weight: bold; }
 
-    text { fill: #333; }
-    .terminal { fill: #333; }
-    .bg { fill: #F0F0F0; stop-color: #F0F0F0; }
-    .window { fill: #E5E5E5; }
-    tspan.r { fill: #BA0000; }
-    tspan.g { fill: #53B900; }
-    tspan.y { fill: #BA9B00; }
-    tspan.b { fill: #0060BA; }
-    tspan.m { fill: #BA00AD; }
-    tspan.c { fill: #00B7BA; }
-    tspan.LG { fill: #696969; }
-    tspan.DG { fill: #AAA; }
-    tspan.R { fill: #EA4B4B; }
-    tspan.G { fill: #88DB43; }
-    tspan.Y { fill: #D3BA3B; }
-    tspan.B { fill: #3890E2; }
-    tspan.M { fill: #DB3BD0; }
-    tspan.C { fill: #39D8DB; }
-    tspan.W { fill: #BEBEBE; }
-    ::-moz-selection { color: #222; fill: #222; background: #CCC; }
-    ::selection { color: #222; fill: #222; background: #CCC; }
-
-    @media (prefers-color-scheme: dark) {
     text { fill: #F5F5F5; }
     .terminal { fill: #DDD; }
     .bg { fill: #222; stop-color: #222; }
@@ -64,7 +41,7 @@
     tspan.W { fill: #BEBEBE; }
     ::-moz-selection { color: #CCC; fill: #CCC; background: #444; }
     ::selection { color: #CCC; fill: #CCC; background: #444; }
-    }
+
   </style>
 
   <rect width="830" height="728" x="0" y="0" rx="8" ry="8" class="bg" />
