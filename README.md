@@ -1,11 +1,11 @@
-<p align="center"><a href="#readme"><img src="https://gh.kaos.st/aligo.svg"/></a></p>
+<p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
   <a href="https://kaos.sh/w/aligo/ci"><img src="https://kaos.sh/w/aligo/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/r/aligo"><img src="https://kaos.sh/r/aligo.svg" alt="GoReportCard" /></a>
   <a href="https://kaos.sh/b/aligo"><img src="https://codebeat.co/badges/18a359f5-50dd-4bfc-95b2-07dee23d018a" alt="codebeat badge" /></a>
   <a href="https://kaos.sh/w/aligo/codeql"><img src="https://kaos.sh/w/aligo/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
-  <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
+  <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
 
 <p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#command-line-completion">Command-line completion</a> • <a href="#man-documentation">Man documentation</a> • <a href="#faq">FAQ</a> • <a href="#usage">Usage</a> • <a href="#ci-status">CI Status</a> • <a href="#contributing">Contributing</a> • <a href="#thanks">Thanks</a> • <a href="#license">License</a></p>
@@ -17,8 +17,8 @@
 ### Screenshots
 
 <p align="center">
-  <img src="https://gh.kaos.st/aligo-1.png" alt="aligo preview">
-  <img src="https://gh.kaos.st/aligo-2.png" alt="aligo preview">
+  <img src=".github/images/screenshot1.png" alt="aligo preview">
+  <img src=".github/images/screenshot2.png" alt="aligo preview">
 </p>
 
 ### Installation
@@ -108,41 +108,7 @@ type MyStruct struct {
 
 ### Usage
 
-```
-Usage: aligo {options} {command} package…
-
-Commands
-
-  check    Check package for alignment problems
-  view     Print alignment info for all structs
-
-Options
-
-  --arch, -a name      Architecture name
-  --struct, -s name    Print info only about struct with given name
-  --tags, -t tag…      Build tags (mergeble)
-  --pager, -P          Use pager for long output
-  --no-color, -nc      Disable colors in output
-  --help, -h           Show this help message
-  --version, -v        Show version
-
-Examples
-
-  aligo view .
-  Show info about all structs in current package
-
-  aligo check .
-  Check current package
-
-  aligo check ./...
-  Check current package and all sub-packages
-
-  aligo --tags tag1,tag2,tag3 check ./...
-  Check current package and all sub-packages with custom build tags
-
-  aligo -s PostMessageParameters view .
-  Show info about PostMessageParameters struct
-```
+<img src=".github/images/usage.svg" />
 
 ### CI Status
 
