@@ -3,6 +3,7 @@
 <p align="center">
   <a href="https://kaos.sh/w/aligo/ci"><img src="https://kaos.sh/w/aligo/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/r/aligo"><img src="https://kaos.sh/r/aligo.svg" alt="GoReportCard" /></a>
+  <a href="https://kaos.sh/y/aligo"><img src="https://kaos.sh/y/be732041f34d4e92a12a28a386b3558a.svg" alt="Codacy badge" /></a>
   <a href="https://kaos.sh/w/aligo/codeql"><img src="https://kaos.sh/w/aligo/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
