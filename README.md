@@ -24,7 +24,7 @@
 
 #### From source
 
-To build the _aligo_ from scratch, make sure you have a working Go 1.19+ workspace (_[instructions](https://go.dev/doc/install)_), then:
+To build the _aligo_ from scratch, make sure you have a working Go 1.22+ workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
 go install github.com/essentialkaos/aligo/v2@latest
@@ -55,7 +55,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.20.x'
+          go-version: '1.22.x'
 
       - name: Check Golang sources with Aligo
         uses: essentialkaos/aligo-action@v2

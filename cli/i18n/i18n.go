@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/essentialkaos/ek/v12/i18n"
+	"github.com/essentialkaos/ek/v13/i18n"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
