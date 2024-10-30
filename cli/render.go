@@ -283,6 +283,12 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 
 		fmt.Print(strings.Repeat("  ", int(counter+1)))
 
+		// Ensure we don't panic when hitting an empty struct{}.
+		if field.Size == 0 {
+			fmtc.NewLine()
+			continue
+		}
+
 		for counter%field.Size != 0 {
 			fmtc.Printf("{r}□{!} ")
 			counter++
