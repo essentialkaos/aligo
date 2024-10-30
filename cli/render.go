@@ -11,10 +11,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/essentialkaos/ek/v12/fmtc"
-	"github.com/essentialkaos/ek/v12/fmtutil"
-	"github.com/essentialkaos/ek/v12/mathutil"
-	"github.com/essentialkaos/ek/v12/terminal"
+	"github.com/essentialkaos/ek/v13/fmtc"
+	"github.com/essentialkaos/ek/v13/fmtutil"
+	"github.com/essentialkaos/ek/v13/mathutil"
+	"github.com/essentialkaos/ek/v13/terminal"
 
 	"github.com/essentialkaos/aligo/v2/cli/i18n"
 	"github.com/essentialkaos/aligo/v2/inspect"
@@ -282,6 +282,12 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 		r.PrintField(field)
 
 		fmt.Print(strings.Repeat("  ", int(counter+1)))
+
+		// Ensure we don't panic when hitting an empty struct{}.
+		if field.Size == 0 {
+			fmtc.NewLine()
+			continue
+		}
 
 		for counter%field.Size != 0 {
 			fmtc.Printf("{r}□{!} ")

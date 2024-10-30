@@ -186,7 +186,8 @@ func getStructReport(info *structInfo) *report.Struct {
 		Ignore:   info.Skip,
 	}
 
-	numFields := info.Type.NumFields()
+	// Use AST fields list length, otherwise List[i] below can panic.
+	numFields := len(info.AST.Fields.List)
 
 	for i := 0; i < numFields; i++ {
 		f := info.Type.Field(i)
