@@ -12,7 +12,20 @@
 
 <br/>
 
-𝑎𝑙𝑖𝑔𝑜 is a utility for checking and viewing Golang struct alignment info.
+𝑎𝑙𝑖𝑔𝑜 is a utility for checking and viewing Golang [struct alignment info](https://medium.com/@codewithkushal/understanding-struct-padding-in-go-in-depth-guide-ed70c0432c63).
+
+### Introduction
+
+Struct alignment is the extra space added between fields in a struct to align them in memory according to the CPU's word size.
+
+By understanding and managing struct padding (e.g., reordering fields), you can improve program performance, reduce memory usage, and ensure data integrity.
+
+This tool aims to provide a visual way, but also a GitHub Action to report possible improvements in your code.
+
+You can refer [@codingwithkushal][github-codingwithkushal]'s [Go struct alignment issues][medium-codewithkushal-struct-padding] article, if you want to understand further.
+
+[github-codingwithkushal]: https://github.com/codingwithkushal
+[medium-codewithkushal-struct-padding]: https://medium.com/@codewithkushal/understanding-struct-padding-in-go-in-depth-guide-ed70c0432c63
 
 ### Screenshots
 
@@ -33,7 +46,7 @@ go install github.com/essentialkaos/aligo/v2@latest
 
 #### Using with Github Actions
 
-For using _aligo_ with Github Actions use this workflow file or add job `Aligo` to your workflow:
+For using _aligo_ with GitHub Actions use this workflow file or add job `Aligo` to your workflow:
 
 ```yml
 name: Aligo

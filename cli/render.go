@@ -201,7 +201,7 @@ func printPackageSeparator(path string) {
 	}
 
 	fmtutil.Separator(true)
-	fmtc.Printf(" ▾ {s}%s{!}\n", path)
+	fmtc.Printfn(" ▾ {s}%s{!}", path)
 	fmtutil.Separator(true)
 	fmtc.NewLine()
 }
@@ -246,11 +246,11 @@ func printStructInfo(str *report.Struct, optimal bool) {
 	printStructSizeInfo(str, optimal)
 
 	if str.Size == 0 {
-		fmtc.Printf("  type {&}{*}%s{!} struct {s}{ }{!}\n\n", str.Name)
+		fmtc.Printfn("  type {&}{*}%s{!} struct {s}{ }{!}\n", str.Name)
 		return
 	}
 
-	fmtc.Printf("  type {&}{*}%s{!} struct {s}{{!}\n", str.Name)
+	fmtc.Printfn("  type {&}{*}%s{!} struct {s}{{!}", str.Name)
 
 	if optimal {
 		printAlignedFieldsInfo(str.AlignedFields)
