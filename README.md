@@ -12,7 +12,7 @@
 
 <br/>
 
-𝑎𝑙𝑖𝑔𝑜 is a utility for checking and viewing Golang struct alignment info.
+𝑎𝑙𝑖𝑔𝑜 is a utility for checking and viewing Golang [struct alignment info](https://medium.com/@codewithkushal/understanding-struct-padding-in-go-in-depth-guide-ed70c0432c63).
 
 ### Screenshots
 
