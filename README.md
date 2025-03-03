@@ -18,7 +18,7 @@
 
 Struct alignment is the extra space added between fields in a struct to align them in memory according to the CPU's word size.
 
-By understanding and managing struct padding (e.g., reordering fields), you can improve program performance, reduce memory usage, and ensure data integrity.
+By understanding and managing struct padding (_e.g., reordering fields_), you can improve program performance, reduce memory usage, and ensure data integrity.
 
 This tool aims to provide a visual way, but also a GitHub Action to report possible improvements in your code.
 
@@ -38,7 +38,7 @@ You can refer [@codingwithkushal][github-codingwithkushal]'s [Go struct alignmen
 
 #### From source
 
-To build the _aligo_ from scratch, make sure you have a working [Go 1.22+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
+To build the _aligo_ from scratch, make sure you have a working [Go 1.23+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
 go install github.com/essentialkaos/aligo/v2@latest
@@ -73,6 +73,7 @@ jobs:
 
       - name: Check Golang sources with Aligo
         uses: essentialkaos/aligo-action@v2
+        continue-on-error: true
         with:
           files: ./...
 ```
