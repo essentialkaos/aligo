@@ -1,2 +1,5 @@
 [files]
 extend-exclude = ["go.sum"]
+
+[default.extend-identifiers]
+typ = "typ"
