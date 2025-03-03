@@ -215,7 +215,7 @@ func printPackageInfo(pkg *report.Package, onlyProblems bool) {
 			continue
 		}
 
-		printStructInfo(str, onlyProblems == true)
+		printStructInfo(str, onlyProblems)
 	}
 }
 
