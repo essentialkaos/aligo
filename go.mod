@@ -2,8 +2,10 @@ module github.com/essentialkaos/aligo/v2
 
 go 1.23.6
 
+toolchain go1.24.1
+
 require (
-	github.com/essentialkaos/ek/v13 v13.20.5
+	github.com/essentialkaos/ek/v13 v13.21.0
 	github.com/kisielk/gotool v1.0.0
 	golang.org/x/tools v0.31.0
 )
