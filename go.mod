@@ -5,7 +5,7 @@ go 1.23.6
 toolchain go1.24.1
 
 require (
-	github.com/essentialkaos/ek/v13 v13.24.0
+	github.com/essentialkaos/ek/v13 v13.24.1
 	github.com/kisielk/gotool v1.0.0
 	golang.org/x/tools v0.32.0
 )
