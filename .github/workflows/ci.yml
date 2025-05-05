@@ -31,7 +31,7 @@ jobs:
 
     strategy:
       matrix:
-        go: [ '1.23.x', '1.24.x' ]
+        go: [ 'oldstable', 'stable' ]
 
     steps:
       - name: Checkout
@@ -61,7 +61,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23.x'
+          go-version: 'stable'
 
       - name: Download dependencies
         run: make deps
