@@ -12,8 +12,6 @@ updates:
       - "PR • MAINTENANCE"
     assignees:
       - "andyone"
-    reviewers:
-      - "andyone"
     groups:
       all:
         applies-to: version-updates
@@ -31,6 +29,4 @@ updates:
     labels:
       - "PR • MAINTENANCE"
     assignees:
-      - "andyone"
-    reviewers:
       - "andyone"
