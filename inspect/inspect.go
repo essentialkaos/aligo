@@ -100,6 +100,7 @@ func GetMaxAlign() int64 {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// processPackages checks given packages and returns report for them
 func processPackages(pkgs []*packages.Package) (*report.Report, error) {
 	result := &report.Report{}
 
@@ -116,6 +117,7 @@ func processPackages(pkgs []*packages.Package) (*report.Report, error) {
 	return result, nil
 }
 
+// processPackage checks given package and returns report for it
 func processPackage(pkg *packages.Package) (*report.Package, error) {
 	var strName string
 	var strPos token.Position
@@ -178,17 +180,6 @@ func processPackage(pkg *packages.Package) (*report.Package, error) {
 	return result, nil
 }
 
-func getStructAstFiled(list []*ast.Field, name string) *ast.Field {
-	for _, field := range list {
-		for _, ident := range field.Names {
-			if ident.Name == name {
-				return field
-			}
-		}
-	}
-	return nil
-}
-
 // getStructInfo parses struct info and calculates size
 func getStructReport(info *structInfo) *report.Struct {
 	result := &report.Struct{
@@ -197,17 +188,11 @@ func getStructReport(info *structInfo) *report.Struct {
 		Ignore:   info.Skip,
 	}
 
-	// Use AST fields list length will leads to an error
-	// where consecutive member variables of
-	// the same type be written on the same line
-	// eg:
-	// type AffineTransform struct {
-	// 	A, B, C float64
-	// }
 	numFields := info.Type.NumFields()
+
 	for i := range numFields {
 		f := info.Type.Field(i)
-		fs := getStructAstFiled(info.AST.Fields.List, f.Name())
+		fs := findFieldInfo(info.AST.Fields.List, i, f.Name())
 
 		size := Sizes.Sizeof(f.Type().Underlying())
 		comm := strings.Trim(fs.Comment.Text(), "\n\r")
@@ -240,6 +225,19 @@ func getStructReport(info *structInfo) *report.Struct {
 	}
 
 	return result
+}
+
+// findFieldInfo tries to find field info in fields slice
+func findFieldInfo(list []*ast.Field, index int, name string) *ast.Field {
+	for _, field := range list {
+		for _, ident := range field.Names {
+			if ident.Name == name {
+				return field
+			}
+		}
+	}
+
+	return list[index]
 }
 
 // getAlignedFields tries to find optimal field order
