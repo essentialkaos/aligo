@@ -178,6 +178,17 @@ func processPackage(pkg *packages.Package) (*report.Package, error) {
 	return result, nil
 }
 
+func getStructAstFiled(list []*ast.Field, name string) *ast.Field {
+	for _, field := range list {
+		for _, ident := range field.Names {
+			if ident.Name == name {
+				return field
+			}
+		}
+	}
+	return nil
+}
+
 // getStructInfo parses struct info and calculates size
 func getStructReport(info *structInfo) *report.Struct {
 	result := &report.Struct{
@@ -186,12 +197,18 @@ func getStructReport(info *structInfo) *report.Struct {
 		Ignore:   info.Skip,
 	}
 
-	// Use AST fields list length, otherwise List[i] below can panic.
-	numFields := len(info.AST.Fields.List)
-
-	for i := 0; i < numFields; i++ {
+	// Use AST fields list length will leads to an error
+	// where consecutive member variables of
+	// the same type be written on the same line
+	// eg:
+	// type AffineTransform struct {
+	// 	A, B, C float64
+	// }
+	numFields := info.Type.NumFields()
+	for i := range numFields {
 		f := info.Type.Field(i)
-		fs := info.AST.Fields.List[i]
+		fs := getStructAstFiled(info.AST.Fields.List, f.Name())
+
 		size := Sizes.Sizeof(f.Type().Underlying())
 		comm := strings.Trim(fs.Comment.Text(), "\n\r")
 		typ := formatValueType(f.Type().String(), info.Mappings)
