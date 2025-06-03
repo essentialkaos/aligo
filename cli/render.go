@@ -2,7 +2,7 @@ package cli
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2024 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2025 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -20,6 +20,11 @@ import (
 	"github.com/essentialkaos/aligo/v2/inspect"
 	"github.com/essentialkaos/aligo/v2/report"
 )
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+// MAX_FIELD_SIZE is maximum field size to render
+const MAX_FIELD_SIZE = 128
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -294,7 +299,7 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 			counter++
 		}
 
-		for i := int64(0); i < field.Size; i++ {
+		for i := int64(0); i < mathutil.Min(field.Size, MAX_FIELD_SIZE); i++ {
 			fmtc.Printf("{g}■{!} ")
 
 			counter++
@@ -306,6 +311,13 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 				}
 				counter = 0
 			}
+		}
+
+		if field.Size > MAX_FIELD_SIZE {
+			fmtc.Printf(
+				"{g}--- %7s ---{!}",
+				fmt.Sprintf("+%d", field.Size-MAX_FIELD_SIZE),
+			)
 		}
 
 		if index+1 < len(fields) && counter != 0 && fields[index+1].Size > maxAlign-counter {

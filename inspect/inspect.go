@@ -2,7 +2,7 @@ package inspect
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2024 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2025 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -190,11 +190,14 @@ func getStructReport(info *structInfo) *report.Struct {
 
 	numFields := info.Type.NumFields()
 
+	// Recover from panic of checking size of non-generic types
+	defer func() { recover() }()
+
 	for i := range numFields {
 		f := info.Type.Field(i)
 		fs := findFieldInfo(info.AST.Fields.List, i, f.Name())
-
-		size := Sizes.Sizeof(f.Type().Underlying())
+		utyp := f.Type().Underlying()
+		size := Sizes.Sizeof(utyp)
 		comm := strings.Trim(fs.Comment.Text(), "\n\r")
 		typ := formatValueType(f.Type().String(), info.Mappings)
 
@@ -209,9 +212,6 @@ func getStructReport(info *structInfo) *report.Struct {
 			},
 		)
 	}
-
-	// Recover from panic of checking size of generic types
-	defer func() { recover() }()
 
 	result.Size = Sizes.Sizeof(info.Type)
 
@@ -272,6 +272,10 @@ func convertPosition(pos token.Position) report.Position {
 func formatValueType(typ string, mappings map[string]string) string {
 	for k, v := range mappings {
 		if strings.Contains(typ, k) {
+			if v == "." {
+				k, v = k+".", "" // Format local type name
+			}
+
 			typ = strings.ReplaceAll(typ, k, v)
 		}
 	}
