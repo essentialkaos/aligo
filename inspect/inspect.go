@@ -190,11 +190,14 @@ func getStructReport(info *structInfo) *report.Struct {
 
 	numFields := info.Type.NumFields()
 
+	// Recover from panic of checking size of non-generic types
+	defer func() { recover() }()
+
 	for i := range numFields {
 		f := info.Type.Field(i)
 		fs := findFieldInfo(info.AST.Fields.List, i, f.Name())
-
-		size := Sizes.Sizeof(f.Type().Underlying())
+		utyp := f.Type().Underlying()
+		size := Sizes.Sizeof(utyp)
 		comm := strings.Trim(fs.Comment.Text(), "\n\r")
 		typ := formatValueType(f.Type().String(), info.Mappings)
 
@@ -209,9 +212,6 @@ func getStructReport(info *structInfo) *report.Struct {
 			},
 		)
 	}
-
-	// Recover from panic of checking size of generic types
-	defer func() { recover() }()
 
 	result.Size = Sizes.Sizeof(info.Type)
 
