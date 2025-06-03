@@ -272,6 +272,10 @@ func convertPosition(pos token.Position) report.Position {
 func formatValueType(typ string, mappings map[string]string) string {
 	for k, v := range mappings {
 		if strings.Contains(typ, k) {
+			if v == "." {
+				k, v = k+".", "" // Format local type name
+			}
+
 			typ = strings.ReplaceAll(typ, k, v)
 		}
 	}
