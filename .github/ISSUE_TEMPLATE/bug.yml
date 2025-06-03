@@ -1,0 +1,64 @@
+name: ❗ Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["issue • bug"]
+assignees:
+  - andyone
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]  
+        > Before you open an issue, search GitHub Issues for a similar bug reports. If so, please add a 👍 reaction to the existing issue.
+
+  - type: textarea
+    attributes:
+      label: Verbose application info
+      description: Output of `aligo -vv` command
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Install tools
+      description: How did you install this application
+      options:
+        - From Sources
+        - RPM Package
+        - Prebuilt Binary
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Short guide on how to reproduce this problem on our site
+      placeholder: |
+        1. [First Step]
+        2. [Second Step]
+        3. [and so on...]
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Actual behavior
+      description: What actually happened
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional info
+      description: Include gist of relevant config, logs, etc.

@@ -1,0 +1,26 @@
+name: ❓ Question
+description: Question about application, configuration or code
+title: "[Question]: "
+labels: ["issue • question"]
+assignees:
+  - andyone
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]  
+        > Before you open an issue, search GitHub Issues for a similar question. If so, please add a 👍 reaction to the existing issue.
+
+  - type: textarea
+    attributes:
+      label: Question
+      description: Detailed question
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Related version application info
+      description: Output of `aligo -vv` command
+      render: shell
