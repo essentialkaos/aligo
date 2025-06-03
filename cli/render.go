@@ -23,6 +23,11 @@ import (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// MAX_FIELD_SIZE is maximum field size to render
+const MAX_FIELD_SIZE = 128
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
 type Renderer struct {
 	format      string
 	hasTags     bool
@@ -294,7 +299,7 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 			counter++
 		}
 
-		for i := int64(0); i < mathutil.Min(field.Size, 128); i++ {
+		for i := int64(0); i < mathutil.Min(field.Size, MAX_FIELD_SIZE); i++ {
 			fmtc.Printf("{g}■{!} ")
 
 			counter++
@@ -308,8 +313,11 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 			}
 		}
 
-		if field.Size > 128 {
-			fmtc.Printf("{g}--- %7s ---{!}", fmt.Sprintf("+%d", field.Size-128))
+		if field.Size > MAX_FIELD_SIZE {
+			fmtc.Printf(
+				"{g}--- %7s ---{!}",
+				fmt.Sprintf("+%d", field.Size-MAX_FIELD_SIZE),
+			)
 		}
 
 		if index+1 < len(fields) && counter != 0 && fields[index+1].Size > maxAlign-counter {
