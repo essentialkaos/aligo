@@ -1,0 +1,43 @@
+name: ➕ Suggestion
+description: Suggest new feature or improvement
+title: "[Suggestion]: "
+labels: ["issue • suggestion"]
+assignees:
+  - andyone
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]  
+        > Before you open an issue, search GitHub Issues for a similar feature requests. If so, please add a 👍 reaction to the existing issue.
+        >
+        > Opening a feature request kicks off a discussion. Requests may be closed if we're not actively planning to work on them.
+
+  - type: textarea
+    attributes:
+      label: Proposal
+      description: Description of the feature
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current behavior
+      description: What currently happens
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Desired behavior
+      description: What you would like to happen
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Use case
+      description: Why is this important (helps with prioritizing requests)
+    validations:
+      required: true

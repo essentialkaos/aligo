@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security Policies and Procedures
+    url: https://github.com/essentialkaos/.github/blob/master/SECURITY.md
+    about: Security procedures and general policies for all ESSENTIAL KAOS projects.
+
+  - name: Contributing Guidelines
+    url: https://github.com/essentialkaos/contributing-guidelines/blob/master/CONTRIBUTING.md
+    about: Contributing Guidelines for all ESSENTIAL KAOS projects
+
+  - name: Go Version Support Policy
+    url: https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md
+    about: Information about supported Go versions
