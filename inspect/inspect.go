@@ -79,8 +79,9 @@ func GetMaxAlign() int64 {
 		return 8
 	}
 
-	switch t := Sizes.(type) {
-	case *types.StdSizes:
+	t, ok := Sizes.(*types.StdSizes)
+
+	if ok {
 		return t.MaxAlign
 	}
 
