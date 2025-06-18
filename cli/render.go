@@ -13,7 +13,6 @@ import (
 
 	"github.com/essentialkaos/ek/v13/fmtc"
 	"github.com/essentialkaos/ek/v13/fmtutil"
-	"github.com/essentialkaos/ek/v13/mathutil"
 	"github.com/essentialkaos/ek/v13/terminal"
 
 	"github.com/essentialkaos/aligo/v2/cli/i18n"
@@ -107,10 +106,10 @@ func NewRenderer(fields []*report.Field, detailed bool) *Renderer {
 	var mName, mType, mTag, mComm int
 
 	for _, f := range fields {
-		mName = mathutil.Max(mName, len(f.Name))
-		mType = mathutil.Max(mType, len(f.Type))
-		mTag = mathutil.Max(mTag, len(f.Tag))
-		mComm = mathutil.Max(mComm, len(f.Comment))
+		mName = max(mName, len(f.Name))
+		mType = max(mType, len(f.Type))
+		mTag = max(mTag, len(f.Tag))
+		mComm = max(mComm, len(f.Comment))
 	}
 
 	if mTag > 0 {
@@ -299,7 +298,7 @@ func printCurrentFieldsInfo(fields []*report.Field) {
 			counter++
 		}
 
-		for i := int64(0); i < mathutil.Min(field.Size, MAX_FIELD_SIZE); i++ {
+		for i := int64(0); i < min(field.Size, MAX_FIELD_SIZE); i++ {
 			fmtc.Printf("{g}■{!} ")
 
 			counter++
