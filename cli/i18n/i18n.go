@@ -24,25 +24,25 @@ type I18NBundle struct {
 }
 
 type I18NErrors struct {
-	OPTION_PARSING      i18n.String
-	UNSUPPORTED_COMMAND i18n.String
-	UNKNOWN_ARCH        i18n.String
+	OPTION_PARSING      i18n.Text
+	UNSUPPORTED_COMMAND i18n.Text
+	UNKNOWN_ARCH        i18n.Text
 
-	EMPTY_STRUCT_NAME i18n.String
-	NO_STRUCT         i18n.String
-	NO_ANY_STRUCTS    i18n.String
+	EMPTY_STRUCT_NAME i18n.Text
+	NO_STRUCT         i18n.Text
+	NO_ANY_STRUCTS    i18n.Text
 }
 
 type I18NInfo struct {
-	ALL_OPTIMAL     i18n.String
-	OPTIMIZE_ADVICE i18n.String
-	WITH_OPTIMAL    i18n.String
-	ALREADY_OPTIMAL i18n.String
+	ALL_OPTIMAL     i18n.Text
+	OPTIMIZE_ADVICE i18n.Text
+	WITH_OPTIMAL    i18n.Text
+	ALREADY_OPTIMAL i18n.Text
 }
 
 type I18NUsage struct {
-	DESC      i18n.String
-	ARGUMENTS i18n.String
+	DESC      i18n.Text
+	ARGUMENTS i18n.Text
 
 	COMMANDS *I18NCommands
 	OPTIONS  *I18NOptions
@@ -50,29 +50,29 @@ type I18NUsage struct {
 }
 
 type I18NCommands struct {
-	CHECK i18n.String
-	VIEW  i18n.String
+	CHECK i18n.Text
+	VIEW  i18n.Text
 }
 
 type I18NOptions struct {
-	ARCH       i18n.String
-	ARCH_VAL   i18n.String
-	STRUCT     i18n.String
-	STRUCT_VAL i18n.String
-	TAGS       i18n.String
-	TAGS_VAL   i18n.String
-	PAGER      i18n.String
-	NO_COLOR   i18n.String
-	HELP       i18n.String
-	VER        i18n.String
+	ARCH       i18n.Text
+	ARCH_VAL   i18n.Text
+	STRUCT     i18n.Text
+	STRUCT_VAL i18n.Text
+	TAGS       i18n.Text
+	TAGS_VAL   i18n.Text
+	PAGER      i18n.Text
+	NO_COLOR   i18n.Text
+	HELP       i18n.Text
+	VER        i18n.Text
 }
 
 type I18NExamples struct {
-	EXAMPLE_1 i18n.String
-	EXAMPLE_2 i18n.String
-	EXAMPLE_3 i18n.String
-	EXAMPLE_4 i18n.String
-	EXAMPLE_5 i18n.String
+	EXAMPLE_1 i18n.Text
+	EXAMPLE_2 i18n.Text
+	EXAMPLE_3 i18n.Text
+	EXAMPLE_4 i18n.Text
+	EXAMPLE_5 i18n.Text
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
