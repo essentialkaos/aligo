@@ -84,17 +84,17 @@ You can generate completion for `bash`, `zsh` or `fish` shell.
 
 Bash:
 ```bash
-sudo aligo --completion=bash 1> /etc/bash_completion.d/aligo
+aligo --completion=bash | sudo tee /etc/bash_completion.d/aligo > /dev/null
 ```
 
 ZSH:
 ```bash
-sudo aligo --completion=zsh 1> /usr/share/zsh/site-functions/aligo
+aligo --completion=zsh | sudo tee /usr/share/zsh/site-functions/aligo > /dev/null
 ```
 
 Fish:
 ```bash
-sudo aligo --completion=fish 1> /usr/share/fish/vendor_completions.d/aligo.fish
+aligo --completion=fish | sudo tee /usr/share/fish/vendor_completions.d/aligo.fish > /dev/null
 ```
 
 ### Man documentation
