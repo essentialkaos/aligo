@@ -50,6 +50,7 @@ const (
 	OPT_STRUCT   = "s:struct"
 	OPT_TAGS     = "t:tags"
 	OPT_PAGER    = "P:pager"
+	OPT_EXCLUDE  = "e:exclude"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -67,6 +68,7 @@ var optMap = options.Map{
 	OPT_STRUCT:   {},
 	OPT_TAGS:     {Mergeble: true},
 	OPT_PAGER:    {Type: options.BOOL},
+	OPT_EXCLUDE:  {Mergeble: true},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
 	OPT_VER:      {Type: options.MIXED},
@@ -184,8 +186,13 @@ func process(args options.Arguments) (error, bool) {
 	cmd := args.Get(0).ToLower().String()
 	dirs := args.Strings()[1:]
 	tags := strings.Split(options.GetS(OPT_TAGS), ",")
+	var excludes []string
 
-	report, err := inspect.ProcessSources(dirs, tags)
+	if options.Has(OPT_EXCLUDE) {
+		excludes = strings.Split(options.GetS(OPT_EXCLUDE), ",")
+	}
+
+	report, err := inspect.ProcessSources(dirs, tags, excludes)
 
 	if err != nil {
 		return err, false
@@ -261,6 +268,7 @@ func genUsage() *usage.Info {
 	info.AddOption(OPT_STRUCT, i18n.UI.USAGE.OPTIONS.STRUCT.String(), i18n.UI.USAGE.OPTIONS.STRUCT_VAL.String())
 	info.AddOption(OPT_TAGS, i18n.UI.USAGE.OPTIONS.TAGS.String(), i18n.UI.USAGE.OPTIONS.TAGS_VAL.String())
 	info.AddOption(OPT_PAGER, i18n.UI.USAGE.OPTIONS.PAGER.String())
+	info.AddOption(OPT_EXCLUDE, i18n.UI.USAGE.OPTIONS.EXCLUDE.String())
 	info.AddOption(OPT_NO_COLOR, i18n.UI.USAGE.OPTIONS.NO_COLOR.String())
 	info.AddOption(OPT_HELP, i18n.UI.USAGE.OPTIONS.HELP.String())
 	info.AddOption(OPT_VER, i18n.UI.USAGE.OPTIONS.VER.String())

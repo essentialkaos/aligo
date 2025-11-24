@@ -14,6 +14,7 @@ import (
 	"go/types"
 	"path"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 
@@ -22,6 +23,7 @@ import (
 	"golang.org/x/tools/go/packages"
 
 	"github.com/essentialkaos/aligo/v2/report"
+	"github.com/essentialkaos/ek/v13/sliceutil"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -51,8 +53,12 @@ var fileSet *token.FileSet
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // ProcessSources starts sources processing
-func ProcessSources(dirs, tags []string) (*report.Report, error) {
-	importPaths := gotool.ImportPaths(dirs)
+func ProcessSources(dirs, tags, excludes []string) (*report.Report, error) {
+	importPaths := sliceutil.Filter(gotool.ImportPaths(dirs), func(importPath string, _ int) bool {
+		return !slices.ContainsFunc(excludes, func(exclude string) bool {
+			return strings.Contains(importPath, exclude)
+		})
+	})
 
 	if len(importPaths) == 0 {
 		return nil, fmt.Errorf("No import paths found")
