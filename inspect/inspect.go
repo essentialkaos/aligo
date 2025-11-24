@@ -14,6 +14,7 @@ import (
 	"go/types"
 	"path"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 
@@ -51,8 +52,16 @@ var fileSet *token.FileSet
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // ProcessSources starts sources processing
-func ProcessSources(dirs, tags []string) (*report.Report, error) {
-	importPaths := gotool.ImportPaths(dirs)
+func ProcessSources(dirs, tags, excludes []string) (*report.Report, error) {
+	var importPaths []string
+
+	for _, importPath := range gotool.ImportPaths(dirs) {
+		if !slices.ContainsFunc(excludes, func(exclude string) bool {
+			return strings.Contains(importPath, exclude)
+		}) {
+			importPaths = append(importPaths, importPath)
+		}
+	}
 
 	if len(importPaths) == 0 {
 		return nil, fmt.Errorf("No import paths found")
@@ -65,7 +74,6 @@ func ProcessSources(dirs, tags []string) (*report.Report, error) {
 		Fset:  fileSet,
 		Tests: false,
 	}, importPaths...)
-
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +115,6 @@ func processPackages(pkgs []*packages.Package) (*report.Report, error) {
 
 	for _, pkg := range pkgs {
 		pkgInfo, err := processPackage(pkg)
-
 		if err != nil {
 			return nil, err
 		}

@@ -62,6 +62,7 @@ type I18NOptions struct {
 	TAGS       i18n.String
 	TAGS_VAL   i18n.String
 	PAGER      i18n.String
+	EXCLUDE    i18n.String
 	NO_COLOR   i18n.String
 	HELP       i18n.String
 	VER        i18n.String
@@ -128,6 +129,7 @@ func getEN() *I18NBundle {
 				TAGS:       "Build tags {s-}(mergeble){!}",
 				TAGS_VAL:   "tag…",
 				PAGER:      "Use pager for long output",
+				EXCLUDE:    "Exclude packages containing given pattern",
 				NO_COLOR:   "Disable colors in output",
 				HELP:       "Show this help message",
 				VER:        "Show version",
@@ -176,6 +178,7 @@ func getRU() *I18NBundle {
 				TAGS:       "Тэги сборки {s-}(повторяемая опция){!}",
 				TAGS_VAL:   "тэг…",
 				PAGER:      "Использовать паджинацию для длинного вывода",
+				EXCLUDE:    "Исключить пакеты, содержащие указанный шаблон",
 				NO_COLOR:   "Отключение цветного вывода",
 				HELP:       "Показать это справочное сообщение",
 				VER:        "Показать версию",
