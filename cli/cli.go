@@ -13,7 +13,6 @@ import (
 	"go/types"
 	"os"
 	"runtime"
-	"strings"
 
 	"github.com/essentialkaos/ek/v13/fmtc"
 	"github.com/essentialkaos/ek/v13/fmtutil"
@@ -41,7 +40,7 @@ import (
 // App info
 const (
 	APP = "aligo"
-	VER = "2.3.1"
+	VER = "2.4.0"
 )
 
 // Constants with options names
@@ -58,6 +57,11 @@ const (
 	OPT_VERB_VER     = "vv:verbose-version"
 	OPT_COMPLETION   = "completion"
 	OPT_GENERATE_MAN = "generate-man"
+)
+
+const (
+	CMD_VIEW  = "view"
+	CMD_CHECK = "check"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -185,12 +189,8 @@ func process(args options.Arguments) (error, bool) {
 
 	cmd := args.Get(0).ToLower().String()
 	dirs := args.Strings()[1:]
-	tags := strings.Split(options.GetS(OPT_TAGS), ",")
-	var excludes []string
-
-	if options.Has(OPT_EXCLUDE) {
-		excludes = strings.Split(options.GetS(OPT_EXCLUDE), ",")
-	}
+	tags := strutil.Fields(options.GetS(OPT_TAGS))
+	excludes := strutil.Fields(options.GetS(OPT_EXCLUDE))
 
 	report, err := inspect.ProcessSources(dirs, tags, excludes)
 
@@ -209,14 +209,14 @@ func process(args options.Arguments) (error, bool) {
 	}
 
 	switch cmd {
-	case "view", "v":
+	case CMD_VIEW, CMD_VIEW[:1]:
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), false)
 		} else {
 			PrintFull(report)
 		}
 
-	case "check", "c":
+	case CMD_CHECK, CMD_CHECK[:1]:
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), true)
 		} else if !Check(report) {

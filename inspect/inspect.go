@@ -18,12 +18,13 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/essentialkaos/ek/v13/sliceutil"
+
 	"github.com/kisielk/gotool"
 
 	"golang.org/x/tools/go/packages"
 
 	"github.com/essentialkaos/aligo/v2/report"
-	"github.com/essentialkaos/ek/v13/sliceutil"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
