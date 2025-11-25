@@ -173,7 +173,7 @@ func prepare() error {
 	inspect.Sizes = types.SizesFor("gc", arch)
 
 	if inspect.Sizes == nil {
-		return fmt.Errorf(i18n.UI.ERRORS.UNKNOWN_ARCH.String(), arch)
+		return i18n.UI.ERRORS.UNKNOWN_ARCH.Error(arch)
 	}
 
 	return nil
@@ -224,7 +224,7 @@ func process(args options.Arguments) (error, bool) {
 		}
 
 	default:
-		return fmt.Errorf(i18n.UI.ERRORS.UNSUPPORTED_COMMAND.String(), cmd), false
+		return i18n.UI.ERRORS.UNSUPPORTED_COMMAND.Error(cmd), false
 	}
 
 	return nil, true
