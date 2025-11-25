@@ -8,7 +8,6 @@ package inspect
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 import (
-	"fmt"
 	"go/ast"
 	"go/token"
 	"go/types"
@@ -24,6 +23,7 @@ import (
 
 	"golang.org/x/tools/go/packages"
 
+	"github.com/essentialkaos/aligo/v2/i18n"
 	"github.com/essentialkaos/aligo/v2/report"
 )
 
@@ -62,7 +62,7 @@ func ProcessSources(dirs, tags, excludes []string) (*report.Report, error) {
 	})
 
 	if len(importPaths) == 0 {
-		return nil, fmt.Errorf("No import paths found")
+		return nil, i18n.UI.ERRORS.NO_IMPORT_PATHS.Error()
 	}
 
 	fileSet = token.NewFileSet()

@@ -31,7 +31,7 @@ import (
 	"github.com/essentialkaos/ek/v13/usage/man"
 	"github.com/essentialkaos/ek/v13/usage/update"
 
-	"github.com/essentialkaos/aligo/v2/cli/i18n"
+	"github.com/essentialkaos/aligo/v2/i18n"
 	"github.com/essentialkaos/aligo/v2/inspect"
 )
 

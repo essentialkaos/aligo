@@ -15,7 +15,7 @@ import (
 	"github.com/essentialkaos/ek/v13/fmtutil"
 	"github.com/essentialkaos/ek/v13/terminal"
 
-	"github.com/essentialkaos/aligo/v2/cli/i18n"
+	"github.com/essentialkaos/aligo/v2/i18n"
 	"github.com/essentialkaos/aligo/v2/inspect"
 	"github.com/essentialkaos/aligo/v2/report"
 )
@@ -90,7 +90,7 @@ func Check(r *report.Report) bool {
 	}
 
 	if !hasProblems {
-		fmtc.Println(i18n.UI.INFO.ALL_OPTIMAL.String())
+		fmtc.Println(i18n.UI.INFO.ALL_OPTIMAL)
 		return true
 	}
 
@@ -227,7 +227,7 @@ func printPackageInfo(pkg *report.Package, onlyProblems bool) {
 func printStructSizeInfo(str *report.Struct, optimal bool) {
 	if optimal {
 		fmtc.Printf(
-			i18n.UI.INFO.OPTIMIZE_ADVICE.Add("", "\n\n"),
+			i18n.UI.INFO.OPTIMIZE_ADVICE.End("\n\n"),
 			str.Name, str.Position.File, str.Position.Line, str.Size, str.OptimalSize,
 		)
 	} else {
