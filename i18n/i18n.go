@@ -49,6 +49,15 @@ type I18NUsage struct {
 	DESC      Text
 	ARGUMENTS Text
 
+	USAGE_HEADER        Text
+	COMMANDS_HEADER     Text
+	COMMAND_PLACEHOLDER Text
+	OPTIONS_HEADER      Text
+	OPTIONS_PLACEHOLDER Text
+	EXAMPLES_HEADER     Text
+	COPYRIGHT           Text
+	LICENSE             Text
+
 	COMMANDS *I18NCommands
 	OPTIONS  *I18NOptions
 	EXAMPLES *I18NExamples
@@ -60,17 +69,18 @@ type I18NCommands struct {
 }
 
 type I18NOptions struct {
-	ARCH       Text
-	ARCH_VAL   Text
-	STRUCT     Text
-	STRUCT_VAL Text
-	TAGS       Text
-	TAGS_VAL   Text
-	PAGER      Text
-	EXCLUDE    Text
-	NO_COLOR   Text
-	HELP       Text
-	VER        Text
+	ARCH        Text
+	ARCH_VAL    Text
+	STRUCT      Text
+	STRUCT_VAL  Text
+	TAGS        Text
+	TAGS_VAL    Text
+	PAGER       Text
+	EXCLUDE     Text
+	EXCLUDE_VAL Text
+	NO_COLOR    Text
+	HELP        Text
+	VER         Text
 }
 
 type I18NExamples struct {
@@ -126,23 +136,33 @@ func getEN() *I18NBundle {
 			DESC:      "Utility for viewing and checking Go struct alignment",
 			ARGUMENTS: "path…",
 
+			USAGE_HEADER:        "Usage",
+			COMMANDS_HEADER:     "Commands",
+			OPTIONS_HEADER:      "Options",
+			EXAMPLES_HEADER:     "Examples",
+			COMMAND_PLACEHOLDER: "{command}",
+			OPTIONS_PLACEHOLDER: "{options}",
+			COPYRIGHT:           "Copyright (C)",
+			LICENSE:             "Apache License, Version 2.0",
+
 			COMMANDS: &I18NCommands{
 				CHECK: "Check package for alignment problems",
 				VIEW:  "Print alignment info for all structs",
 			},
 
 			OPTIONS: &I18NOptions{
-				ARCH:       "Architecture name",
-				ARCH_VAL:   "name",
-				STRUCT:     "Print info only about struct with given name",
-				STRUCT_VAL: "name",
-				TAGS:       "Build tags {s-}(mergeble){!}",
-				TAGS_VAL:   "tag…",
-				PAGER:      "Use pager for long output",
-				EXCLUDE:    "Exclude packages containing given pattern",
-				NO_COLOR:   "Disable colors in output",
-				HELP:       "Show this help message",
-				VER:        "Show version",
+				ARCH:        "Architecture name",
+				ARCH_VAL:    "name",
+				STRUCT:      "Print info only about struct with given name",
+				STRUCT_VAL:  "name",
+				TAGS:        "Build tags {s-}(mergeble){!}",
+				TAGS_VAL:    "tag…",
+				PAGER:       "Use pager for long output",
+				EXCLUDE:     "Exclude packages containing given pattern {s-}(mergeble){!}",
+				EXCLUDE_VAL: "pattern…",
+				NO_COLOR:    "Disable colors in output",
+				HELP:        "Show this help message",
+				VER:         "Show version",
 			},
 
 			EXAMPLES: &I18NExamples{
@@ -181,23 +201,33 @@ func getRU() *I18NBundle {
 			DESC:      "Утилита для просмотра и проверки выравнивания полей в структрах Go",
 			ARGUMENTS: "путь…",
 
+			USAGE_HEADER:        "Использование",
+			COMMANDS_HEADER:     "Команды",
+			OPTIONS_HEADER:      "Опции",
+			EXAMPLES_HEADER:     "Примеры",
+			COMMAND_PLACEHOLDER: "{команда}",
+			OPTIONS_PLACEHOLDER: "{опции}",
+			COPYRIGHT:           "Все права защищены",
+			LICENSE:             "Лицензия Apache, Версия 2.0",
+
 			COMMANDS: &I18NCommands{
 				CHECK: "Проверка на наличие проблем с выравниванием",
 				VIEW:  "Отображние информации о выравнивании",
 			},
 
 			OPTIONS: &I18NOptions{
-				ARCH:       "Название архитектуры",
-				ARCH_VAL:   "имя",
-				STRUCT:     "Отображение информации только для указанной структуры",
-				STRUCT_VAL: "имя",
-				TAGS:       "Тэги сборки {s-}(повторяемая опция){!}",
-				TAGS_VAL:   "тэг…",
-				PAGER:      "Использовать постраничный вывод",
-				EXCLUDE:    "Исключение пакетов содержащие указанный шаблон",
-				NO_COLOR:   "Отключение цветного вывода",
-				HELP:       "Показать это справочное сообщение",
-				VER:        "Показать версию",
+				ARCH:        "Название архитектуры",
+				ARCH_VAL:    "имя",
+				STRUCT:      "Отображение информации только для указанной структуры",
+				STRUCT_VAL:  "имя",
+				TAGS:        "Тэги сборки {s-}(повторяемая опция){!}",
+				TAGS_VAL:    "тэг…",
+				PAGER:       "Использовать постраничный вывод",
+				EXCLUDE:     "Исключение пакетов содержащие указанный шаблон {s-}(повторяемая опция){!}",
+				EXCLUDE_VAL: "шаблон…",
+				NO_COLOR:    "Отключение цветного вывода",
+				HELP:        "Показать это справочное сообщение",
+				VER:         "Показать версию",
 			},
 
 			EXAMPLES: &I18NExamples{
