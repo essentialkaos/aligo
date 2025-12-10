@@ -8,19 +8,22 @@ package inspect
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 import (
-	"fmt"
 	"go/ast"
 	"go/token"
 	"go/types"
 	"path"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
+
+	"github.com/essentialkaos/ek/v13/sliceutil"
 
 	"github.com/kisielk/gotool"
 
 	"golang.org/x/tools/go/packages"
 
+	"github.com/essentialkaos/aligo/v2/i18n"
 	"github.com/essentialkaos/aligo/v2/report"
 )
 
@@ -51,11 +54,15 @@ var fileSet *token.FileSet
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // ProcessSources starts sources processing
-func ProcessSources(dirs, tags []string) (*report.Report, error) {
-	importPaths := gotool.ImportPaths(dirs)
+func ProcessSources(dirs, tags, excludes []string) (*report.Report, error) {
+	importPaths := sliceutil.Filter(gotool.ImportPaths(dirs), func(importPath string, _ int) bool {
+		return !slices.ContainsFunc(excludes, func(exclude string) bool {
+			return strings.Contains(importPath, exclude)
+		})
+	})
 
 	if len(importPaths) == 0 {
-		return nil, fmt.Errorf("No import paths found")
+		return nil, i18n.UI.ERRORS.NO_IMPORT_PATHS.Error()
 	}
 
 	fileSet = token.NewFileSet()

@@ -13,7 +13,6 @@ import (
 	"go/types"
 	"os"
 	"runtime"
-	"strings"
 
 	"github.com/essentialkaos/ek/v13/fmtc"
 	"github.com/essentialkaos/ek/v13/fmtutil"
@@ -32,7 +31,7 @@ import (
 	"github.com/essentialkaos/ek/v13/usage/man"
 	"github.com/essentialkaos/ek/v13/usage/update"
 
-	"github.com/essentialkaos/aligo/v2/cli/i18n"
+	"github.com/essentialkaos/aligo/v2/i18n"
 	"github.com/essentialkaos/aligo/v2/inspect"
 )
 
@@ -41,7 +40,7 @@ import (
 // App info
 const (
 	APP = "aligo"
-	VER = "2.3.1"
+	VER = "2.4.0"
 )
 
 // Constants with options names
@@ -50,6 +49,7 @@ const (
 	OPT_STRUCT   = "s:struct"
 	OPT_TAGS     = "t:tags"
 	OPT_PAGER    = "P:pager"
+	OPT_EXCLUDE  = "e:exclude"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -57,6 +57,11 @@ const (
 	OPT_VERB_VER     = "vv:verbose-version"
 	OPT_COMPLETION   = "completion"
 	OPT_GENERATE_MAN = "generate-man"
+)
+
+const (
+	CMD_VIEW  = "view"
+	CMD_CHECK = "check"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -67,6 +72,7 @@ var optMap = options.Map{
 	OPT_STRUCT:   {},
 	OPT_TAGS:     {Mergeble: true},
 	OPT_PAGER:    {Type: options.BOOL},
+	OPT_EXCLUDE:  {Mergeble: true},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
 	OPT_VER:      {Type: options.MIXED},
@@ -167,7 +173,7 @@ func prepare() error {
 	inspect.Sizes = types.SizesFor("gc", arch)
 
 	if inspect.Sizes == nil {
-		return fmt.Errorf(i18n.UI.ERRORS.UNKNOWN_ARCH.String(), arch)
+		return i18n.UI.ERRORS.UNKNOWN_ARCH.Error(arch)
 	}
 
 	return nil
@@ -183,9 +189,10 @@ func process(args options.Arguments) (error, bool) {
 
 	cmd := args.Get(0).ToLower().String()
 	dirs := args.Strings()[1:]
-	tags := strings.Split(options.GetS(OPT_TAGS), ",")
+	tags := strutil.Fields(options.GetS(OPT_TAGS))
+	excludes := strutil.Fields(options.GetS(OPT_EXCLUDE))
 
-	report, err := inspect.ProcessSources(dirs, tags)
+	report, err := inspect.ProcessSources(dirs, tags, excludes)
 
 	if err != nil {
 		return err, false
@@ -202,14 +209,14 @@ func process(args options.Arguments) (error, bool) {
 	}
 
 	switch cmd {
-	case "view", "v":
+	case CMD_VIEW, CMD_VIEW[:1]:
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), false)
 		} else {
 			PrintFull(report)
 		}
 
-	case "check", "c":
+	case CMD_CHECK, CMD_CHECK[:1]:
 		if options.Has(OPT_STRUCT) {
 			PrintStruct(report, options.GetS(OPT_STRUCT), true)
 		} else if !Check(report) {
@@ -217,7 +224,7 @@ func process(args options.Arguments) (error, bool) {
 		}
 
 	default:
-		return fmt.Errorf(i18n.UI.ERRORS.UNSUPPORTED_COMMAND.String(), cmd), false
+		return i18n.UI.ERRORS.UNSUPPORTED_COMMAND.Error(cmd), false
 	}
 
 	return nil, true
@@ -250,44 +257,53 @@ func printMan() {
 
 // genUsage generates usage info
 func genUsage() *usage.Info {
-	info := usage.NewInfo("", i18n.UI.USAGE.ARGUMENTS.String())
+	info := usage.NewInfo("", i18n.UI.USAGE.ARGUMENTS)
 
+	info.WrapLen = 120
 	info.AppNameColorTag = colorTagApp
 
-	info.AddCommand("check", i18n.UI.USAGE.COMMANDS.CHECK.String())
-	info.AddCommand("view", i18n.UI.USAGE.COMMANDS.VIEW.String())
+	info.UsageHeader = i18n.UI.USAGE.USAGE_HEADER.String()
+	info.CommandsHeader = i18n.UI.USAGE.COMMANDS_HEADER.String()
+	info.OptionsHeader = i18n.UI.USAGE.OPTIONS_HEADER.String()
+	info.ExamplesHeader = i18n.UI.USAGE.EXAMPLES_HEADER.String()
+	info.CommandPlaceholder = i18n.UI.USAGE.COMMAND_PLACEHOLDER.String()
+	info.OptionsPlaceholder = i18n.UI.USAGE.OPTIONS_PLACEHOLDER.String()
 
-	info.AddOption(OPT_ARCH, i18n.UI.USAGE.OPTIONS.ARCH.String(), i18n.UI.USAGE.OPTIONS.ARCH_VAL.String())
-	info.AddOption(OPT_STRUCT, i18n.UI.USAGE.OPTIONS.STRUCT.String(), i18n.UI.USAGE.OPTIONS.STRUCT_VAL.String())
-	info.AddOption(OPT_TAGS, i18n.UI.USAGE.OPTIONS.TAGS.String(), i18n.UI.USAGE.OPTIONS.TAGS_VAL.String())
-	info.AddOption(OPT_PAGER, i18n.UI.USAGE.OPTIONS.PAGER.String())
-	info.AddOption(OPT_NO_COLOR, i18n.UI.USAGE.OPTIONS.NO_COLOR.String())
-	info.AddOption(OPT_HELP, i18n.UI.USAGE.OPTIONS.HELP.String())
-	info.AddOption(OPT_VER, i18n.UI.USAGE.OPTIONS.VER.String())
+	info.AddCommand("check", i18n.UI.USAGE.COMMANDS.CHECK)
+	info.AddCommand("view", i18n.UI.USAGE.COMMANDS.VIEW)
+
+	info.AddOption(OPT_ARCH, i18n.UI.USAGE.OPTIONS.ARCH, i18n.UI.USAGE.OPTIONS.ARCH_VAL)
+	info.AddOption(OPT_STRUCT, i18n.UI.USAGE.OPTIONS.STRUCT, i18n.UI.USAGE.OPTIONS.STRUCT_VAL)
+	info.AddOption(OPT_TAGS, i18n.UI.USAGE.OPTIONS.TAGS, i18n.UI.USAGE.OPTIONS.TAGS_VAL)
+	info.AddOption(OPT_EXCLUDE, i18n.UI.USAGE.OPTIONS.EXCLUDE, i18n.UI.USAGE.OPTIONS.EXCLUDE_VAL)
+	info.AddOption(OPT_PAGER, i18n.UI.USAGE.OPTIONS.PAGER)
+	info.AddOption(OPT_NO_COLOR, i18n.UI.USAGE.OPTIONS.NO_COLOR)
+	info.AddOption(OPT_HELP, i18n.UI.USAGE.OPTIONS.HELP)
+	info.AddOption(OPT_VER, i18n.UI.USAGE.OPTIONS.VER)
 
 	info.AddExample(
 		"view .",
-		i18n.UI.USAGE.EXAMPLES.EXAMPLE_1.String(),
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_1,
 	)
 
 	info.AddExample(
 		"check .",
-		i18n.UI.USAGE.EXAMPLES.EXAMPLE_2.String(),
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_2,
 	)
 
 	info.AddExample(
 		"check ./...",
-		i18n.UI.USAGE.EXAMPLES.EXAMPLE_3.String(),
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_3,
 	)
 
 	info.AddExample(
 		"--tags tag1,tag2,tag3 check ./...",
-		i18n.UI.USAGE.EXAMPLES.EXAMPLE_4.String(),
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_4,
 	)
 
 	info.AddExample(
 		"-s PostMessageParameters view .",
-		i18n.UI.USAGE.EXAMPLES.EXAMPLE_5.String(),
+		i18n.UI.USAGE.EXAMPLES.EXAMPLE_5,
 	)
 
 	return info
@@ -306,7 +322,9 @@ func genAbout(gitRev string) *usage.About {
 		VersionColorTag: colorTagVer,
 		DescSeparator:   "{s}—{!}",
 
-		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
+		Copyright: i18n.UI.USAGE.COPYRIGHT.String(),
+		License:   i18n.UI.USAGE.LICENSE.End(" <https://www.apache.org/licenses/LICENSE-2.0>"),
+
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/aligo", update.GitHubChecker},
 	}
 
