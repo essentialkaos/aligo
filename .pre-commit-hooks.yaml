@@ -1,0 +1,7 @@
+---
+- id: aligo-check
+  name: Aligo
+  description: Check Golang struct alignment info
+  entry: aligo check
+  language: golang
+  types: [go]
