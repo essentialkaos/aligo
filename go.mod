@@ -3,7 +3,7 @@ module github.com/essentialkaos/aligo/v2
 go 1.24.0
 
 require (
-	github.com/essentialkaos/ek/v13 v13.37.4
+	github.com/essentialkaos/ek/v13 v13.37.5
 	github.com/kisielk/gotool v1.0.0
 	golang.org/x/tools v0.40.0
 )
