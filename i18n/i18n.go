@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/essentialkaos/ek/v13/i18n"
+	"github.com/essentialkaos/ek/v14/i18n"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -105,7 +105,7 @@ func SetLanguage() {
 	switch strings.ToLower(lang) {
 	case "ru":
 		l, _ := i18n.Fallback(getEN(), getRU())
-		UI = l.(*I18NBundle)
+		UI = l
 	}
 }
 

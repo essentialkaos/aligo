@@ -17,7 +17,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/essentialkaos/ek/v13/sliceutil"
+	"github.com/essentialkaos/ek/v14/sliceutil"
 
 	"github.com/kisielk/gotool"
 
