@@ -1,10 +1,10 @@
 <p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
-  <a href="https://kaos.sh/r/aligo"><img src="https://kaos.sh/r/aligo.svg" alt="GoReportCard" /></a>
-  <a href="https://kaos.sh/y/aligo"><img src="https://kaos.sh/y/be732041f34d4e92a12a28a386b3558a.svg" alt="Codacy badge" /></a>
-  <a href="https://kaos.sh/w/aligo/ci"><img src="https://kaos.sh/w/aligo/ci.svg" alt="GitHub Actions CI Status" /></a>
-  <a href="https://kaos.sh/w/aligo/codeql"><img src="https://kaos.sh/w/aligo/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
+  <a href="https://kaos.sh/r/aligo"><img src="https://goreportcard.com/badge/github.com/essentialkaos/aligo" alt="GoReportCard" /></a>
+  <a href="https://kaos.sh/y/aligo"><img src="https://app.codacy.com/project/badge/Grade/be732041f34d4e92a12a28a386b3558a" alt="Codacy badge" /></a>
+  <a href="https://kaos.sh/w/aligo/ci"><img src="https://github.com/essentialkaos/aligo/actions/workflows/ci.yml/badge.svg" alt="GitHub Actions CI Status" /></a>
+  <a href="https://kaos.sh/w/aligo/codeql"><img src="https://github.com/essentialkaos/aligo/actions/workflows/codeql.yml/badge.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
 
@@ -38,7 +38,7 @@ You can refer [@codingwithkushal][github-codingwithkushal]'s [Go struct alignmen
 
 #### From source
 
-To build the _aligo_ from scratch, make sure you have a working [Go 1.23+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
+To build the _aligo_ from scratch, make sure you have a working [Go 1.25+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
 go install github.com/essentialkaos/aligo/v2@latest
@@ -64,10 +64,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v6
         with:
           go-version: 'stable'
 
@@ -128,8 +128,8 @@ type MyStruct struct {
 
 | Branch | Status |
 |--------|--------|
-| `master` | [![CI](https://kaos.sh/w/aligo/ci.svg?branch=master)](https://kaos.sh/w/aligo/ci?query=branch:master) |
-| `develop` | [![CI](https://kaos.sh/w/aligo/ci.svg?branch=develop)](https://kaos.sh/w/aligo/ci?query=branch:develop) |
+| `master` | [![CI](https://github.com/essentialkaos/aligo/actions/workflows/ci.yml/badge.svg?branch=)](https://kaos.sh/w/aligo/ci?query=branch:master) |
+| `develop` | [![CI](https://github.com/essentialkaos/aligo/actions/workflows/ci.yml/badge.svg?branch=develop)](https://kaos.sh/w/aligo/ci?query=branch:develop) |
 
 ### Contributing
 
