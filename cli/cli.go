@@ -40,7 +40,7 @@ import (
 // App info
 const (
 	APP = "aligo"
-	VER = "2.5.2"
+	VER = "2.5.3"
 )
 
 // Constants with options names
