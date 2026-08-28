@@ -1,7 +1,6 @@
 <p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
-  <a href="https://kaos.sh/r/aligo"><img src="https://goreportcard.com/badge/github.com/essentialkaos/aligo" alt="GoReportCard" /></a>
   <a href="https://kaos.sh/y/aligo"><img src="https://app.codacy.com/project/badge/Grade/be732041f34d4e92a12a28a386b3558a" alt="Codacy badge" /></a>
   <a href="https://kaos.sh/w/aligo/ci"><img src="https://github.com/essentialkaos/aligo/actions/workflows/ci.yml/badge.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/w/aligo/codeql"><img src="https://github.com/essentialkaos/aligo/actions/workflows/codeql.yml/badge.svg" alt="GitHub Actions CodeQL Status" /></a>
